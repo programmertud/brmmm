@@ -62,19 +62,20 @@ export default function Sidebar({
       {/* Mobile Backdrop */}
       {mobileOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/75 backdrop-blur-sm z-40 lg:hidden"
           onClick={() => setMobileOpen?.(false)}
         />
       )}
 
       <div
         className={`
-          h-screen fixed top-0 left-0 bg-gradient-to-b from-green-900 to-green-800 text-white
-          flex flex-col transition-all duration-300 z-50 shadow-2xl border-r border-green-700 overflow-y-auto
+          h-screen h-[100dvh] fixed top-0 left-0 bg-gradient-to-b from-green-900 to-green-800 text-white
+          flex flex-col transition-all duration-500 z-50 shadow-[0_0_40px_rgba(0,0,0,0.5)] border-r border-green-700
           ${collapsed ? "lg:w-20" : "lg:w-64"}
-          ${mobileOpen ? "translate-x-0 w-64" : "-translate-x-full lg:translate-x-0"}
+          ${mobileOpen ? "translate-x-0 w-[85vw] max-w-[300px]" : "-translate-x-full lg:translate-x-0"}
         `}
       >
+        <div className="flex flex-col h-full overflow-y-auto scrollbar-hide">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-green-700">
           <div className="flex items-center gap-4 overflow-hidden">
@@ -172,6 +173,7 @@ export default function Sidebar({
             <p className="mt-1">City of Surigao</p>
           </div>
         )}
+      </div>
       </div>
     </>
   );
