@@ -24,12 +24,14 @@ app.get('/api/ping', (req, res) => {
 app.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
     
-    const cleanUser = (username || "").trim().toLowerCase();
-    const cleanPass = (password || "").trim();
+    // Aggressively remove invisible characters and spaces
+    const cleanUser = (username || "").replace(/[^\x20-\x7E]/g, "").trim().toLowerCase();
+    const cleanPass = (password || "").replace(/[^\x20-\x7E]/g, "").trim();
 
-    console.log(`Login attempt for: [${cleanUser}] with pass length: ${cleanPass.length}`);
+    console.log(`Login attempt for: [${cleanUser}] (length: ${cleanUser.length})`);
+    console.log(`Password length: ${cleanPass.length}`);
 
-    // 1. DIRECT FALLBACK (Ignore all database checks for admin)
+    // 1. DIRECT FALLBACK
     if (cleanUser === "admin" && (cleanPass === "admin123" || cleanPass === "rizal12345")) {
         console.log("Emergency Admin login successful.");
         return res.json({ username: "admin", role: "admin" });
