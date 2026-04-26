@@ -19,6 +19,7 @@ const supabase = createClient(
 // Auth Routes
 app.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
+    console.log(`Login attempt for: ${username}`);
     
     // Check if user exists in Supabase
     const { data: user, error } = await supabase
@@ -27,20 +28,30 @@ app.post('/api/auth/login', async (req, res) => {
         .eq('username', username)
         .single();
 
-    if (error || !user) {
+    if (error) {
+        console.error("Supabase Error:", error.message);
+    }
+
+    if (!user) {
+        console.log("User not found in Supabase. Checking fallback...");
         // FALLBACK: If no users exist yet, allow initial admin login with admin/admin123
-        // and automatically create the user in Supabase
         if (username === "admin" && password === "admin123") {
+            console.log("Fallback triggered. Creating admin user...");
             const hashedPassword = bcrypt.hashSync("admin123", 10);
-            await supabase.from('users').insert([{ username: "admin", password: hashedPassword, role: "admin" }]);
+            const { error: insErr } = await supabase.from('users').insert([{ username: "admin", password: hashedPassword, role: "admin" }]);
+            if (insErr) console.error("Insert Error:", insErr.message);
             return res.json({ username: "admin", role: "admin" });
         }
         return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    console.log("User found. Comparing passwords...");
     if (bcrypt.compareSync(password, user.password)) {
+        console.log("Login successful!");
         return res.json({ username: user.username, role: user.role });
     }
+    
+    console.log("Password mismatch.");
     res.status(401).json({ message: "Invalid credentials" });
 });
 
