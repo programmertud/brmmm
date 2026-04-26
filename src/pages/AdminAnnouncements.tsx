@@ -48,8 +48,8 @@ export default function AdminAnnouncements() {
     try {
       await api.post("/announcements", {
         title,
-        body,
-        date,
+        desc: body,
+        date: date || new Date().toISOString().split('T')[0],
       });
 
       const reload = await api.get("/announcements");
