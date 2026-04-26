@@ -115,9 +115,9 @@ export default function ResidentsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto mt-6 bg-white p-8 rounded-2xl shadow-2xl">
-      <h1 className="text-4xl font-bold mb-10 text-center text-green-800">
-        RESIDENTS MANAGEMENT
+    <div className="max-w-7xl mx-auto mt-4 md:mt-6 bg-white p-4 md:p-8 rounded-2xl shadow-2xl">
+      <h1 className="text-2xl md:text-4xl font-bold mb-6 md:mb-10 text-center text-green-800 uppercase tracking-tight">
+        Residents Management
       </h1>
 
       {/* Error Message */}
@@ -128,8 +128,8 @@ export default function ResidentsPage() {
       )}
 
       {/* Form */}
-      <div className="bg-gray-50 p-8 rounded-2xl shadow-inner mb-10">
-        <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="bg-gray-50 p-4 md:p-8 rounded-2xl shadow-inner mb-10">
+        <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
           {/* PHOTO UPLOAD */}
           <div className="flex justify-center">
             <div className="relative group">
@@ -137,11 +137,11 @@ export default function ResidentsPage() {
                 <img
                   src={photoPreview}
                   alt="Resident"
-                  className="w-48 h-48 rounded-full object-cover border-8 border-green-700 shadow-2xl"
+                  className="w-32 h-32 md:w-48 md:h-48 rounded-full object-cover border-4 md:border-8 border-green-700 shadow-2xl"
                 />
               ) : (
-                <div className="w-48 h-48 rounded-full bg-gray-200 border-8 border-dashed border-green-700 flex items-center justify-center">
-                  <FaUserCircle className="text-9xl text-gray-400" />
+                <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-gray-200 border-4 md:border-8 border-dashed border-green-700 flex items-center justify-center">
+                  <FaUserCircle className="text-7xl md:text-9xl text-gray-400" />
                 </div>
               )}
 
@@ -249,8 +249,8 @@ export default function ResidentsPage() {
       </div>
 
       {/* Residents Table */}
-      <div className="overflow-x-auto rounded-xl shadow-lg">
-        <table className="w-full border-collapse text-sm">
+      <div className="overflow-x-auto rounded-xl shadow-lg border border-gray-200">
+        <table className="w-full min-w-[900px] border-collapse text-sm">
           <thead className="bg-green-700 text-white">
             <tr>
               <th className="px-6 py-5 text-left">Photo</th>

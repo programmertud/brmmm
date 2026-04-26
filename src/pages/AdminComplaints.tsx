@@ -50,7 +50,8 @@ export default function AdminComplaints() {
         ) : items.length === 0 ? (
           <p className="p-6 text-gray-500">No complaints found.</p>
         ) : (
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[800px]">
             <thead className="bg-red-700 text-white">
               <tr>
                 <th className="p-3 text-left">Date</th>
@@ -78,6 +79,7 @@ export default function AdminComplaints() {
               ))}
             </tbody>
           </table>
+        </div>
         )}
       </div>
     </div>

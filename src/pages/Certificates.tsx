@@ -225,21 +225,21 @@ const handlePrint = (cert: any) => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-6 space-y-12">
-      <h1 className="text-5xl font-bold text-center text-green-800">CERTIFICATE ISSUANCE</h1>
+    <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-8 md:space-y-12">
+      <h1 className="text-3xl md:text-5xl font-bold text-center text-green-800">CERTIFICATE ISSUANCE</h1>
 
       {/* Issue Section */}
-      <div className="bg-white rounded-3xl shadow-2xl p-10">
-        <h2 className="text-3xl font-bold text-green-700 mb-8">Issue New Certificate</h2>
+      <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-10">
+        <h2 className="text-2xl md:text-3xl font-bold text-green-700 mb-8">Issue New Certificate</h2>
 
         <div className="relative max-w-2xl mx-auto mb-8">
-          <FaSearch className="absolute left-6 top-6 text-2xl text-gray-500" />
+          <FaSearch className="absolute left-6 top-5 md:top-6 text-xl md:text-2xl text-gray-500" />
           <input
             type="text"
             placeholder="Search resident..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-16 pr-8 py-6 text-xl border-4 border-gray-300 rounded-2xl focus:border-green-600"
+            className="w-full pl-14 md:pl-16 pr-6 md:pr-8 py-4 md:py-6 text-lg md:text-xl border-4 border-gray-300 rounded-2xl focus:border-green-600 outline-none"
           />
         </div>
 
@@ -284,10 +284,10 @@ const handlePrint = (cert: any) => {
               </div>
               <button
                 onClick={handleIssue}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-8 rounded-3xl font-bold text-3xl flex items-center justify-center gap-6"
+                className="w-full bg-green-600 hover:bg-green-700 text-white py-5 md:py-8 rounded-3xl font-bold text-xl md:text-3xl flex items-center justify-center gap-4 md:gap-6 shadow-xl"
               >
-                <FaPrint className="text-5xl" />
-                ISSUE & PRINT CERTIFICATE
+                <FaPrint className="text-3xl md:text-5xl" />
+                ISSUE & PRINT
               </button>
             </div>
           </div>
@@ -300,19 +300,22 @@ const handlePrint = (cert: any) => {
         {certificates.slice().reverse().map((cert, idx) => {
           const originalIndex = certificates.length - 1 - idx;
           return (
-            <div key={cert.controlNo} className="mb-6 p-6 bg-green-50 rounded-2xl flex justify-between items-center">
-              <div className="flex items-center gap-6">
-                {cert.residentPhoto ? <img src={cert.residentPhoto} className="w-16 h-16 rounded-full" /> : <FaUserCircle className="w-16 h-16" />}
-                <div>
-                  <p className="font-bold text-xl">{cert.residentName}</p>
-                  <p>{cert.type} • {cert.purpose}</p>
+            <div key={cert.controlNo} className="mb-6 p-4 md:p-6 bg-green-50 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
+              <div className="flex items-center gap-4 md:gap-6 w-full">
+                {cert.residentPhoto ? <img src={cert.residentPhoto} className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover" /> : <FaUserCircle className="w-12 h-12 md:w-16 md:h-16 text-gray-400" />}
+                <div className="flex-1">
+                  <p className="font-bold text-lg md:text-xl text-green-900">{cert.residentName}</p>
+                  <p className="text-sm md:text-base text-gray-700">{cert.type}</p>
+                  <p className="text-xs text-gray-500 italic truncate max-w-[200px] md:max-w-md">{cert.purpose}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
-                <span className="text-2xl font-bold text-green-600">₱{cert.fee}</span>
-                <button onClick={() => handlePrint(cert)} className="bg-blue-600 text-white p-3 rounded"><FaPrint /></button>
-                <button onClick={() => openEditModal(cert)} className="bg-yellow-500 text-white p-3 rounded"><FaEdit /></button>
-                <button onClick={() => confirmDelete(originalIndex)} className="bg-red-600 text-white p-3 rounded"><FaTrash /></button>
+              <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto justify-between md:justify-end border-t md:border-none pt-4 md:pt-0">
+                <span className="text-xl md:text-2xl font-bold text-green-600">₱{cert.fee}</span>
+                <div className="flex gap-2">
+                  <button onClick={() => handlePrint(cert)} className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg shadow"><FaPrint /></button>
+                  <button onClick={() => openEditModal(cert)} className="bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-lg shadow"><FaEdit /></button>
+                  <button onClick={() => confirmDelete(originalIndex)} className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-lg shadow"><FaTrash /></button>
+                </div>
               </div>
             </div>
           );

@@ -45,13 +45,13 @@ const AdminLayout = ({
       setMobileOpen={setMobileOpen} 
     />
 
-    <div className={`flex-1 transition-all duration-300 flex flex-col ${collapsed ? "lg:ml-20" : "lg:ml-64"} ml-0`}>
+    <div className={`flex-1 transition-all duration-300 flex flex-col ${collapsed ? "lg:ml-20" : "lg:ml-64"}`}>
       <header className="lg:hidden bg-green-900 text-white p-4 flex items-center justify-between shadow-lg sticky top-0 z-40">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full border-2 border-yellow-400 bg-white overflow-hidden">
+          <div className="w-10 h-10 rounded-full border-2 border-yellow-400 bg-white overflow-hidden flex-shrink-0">
              <img src={Logo} alt="Logo" className="w-full h-full object-cover" />
           </div>
-          <span className="font-bold text-yellow-300 tracking-tight">BARANGAY RIZAL</span>
+          <span className="font-bold text-yellow-300 tracking-tight truncate">BARANGAY RIZAL</span>
         </div>
         <button 
           onClick={() => setMobileOpen(true)}

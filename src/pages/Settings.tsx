@@ -212,9 +212,9 @@ export default function Settings() {
      UI RENDER
   --------------------------------*/
   return (
-    <div className="max-w-5xl mx-auto mt-6 bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md">
+    <div className="max-w-5xl mx-auto mt-4 md:mt-6 bg-white dark:bg-gray-800 p-4 md:p-8 rounded-xl shadow-md">
 
-      <h1 className="text-3xl font-bold mb-6">⚙ Settings</h1>
+      <h1 className="text-2xl md:text-3xl font-bold mb-6">⚙ Settings</h1>
 
       {/* -----------------------------------------------------
            SECTION: BARANGAY INFORMATION
@@ -314,8 +314,8 @@ export default function Settings() {
           </button>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border shadow-sm">
-          <table className="w-full border-collapse">
+        <div className="overflow-x-auto rounded-xl border shadow-sm border-gray-200">
+          <table className="w-full border-collapse min-w-[500px]">
             <thead className="bg-green-50 dark:bg-gray-700">
               <tr>
                 <th className="p-4 border text-left text-green-800 font-bold">Name</th>
@@ -326,7 +326,7 @@ export default function Settings() {
 
             <tbody className="bg-white">
               {officials.length > 0 ? officials.map((o) => (
-                <tr key={o.id} className="hover:bg-gray-50 transition">
+                <tr key={o.id} className="hover:bg-gray-50 transition text-sm md:text-base">
                   <td className="p-4 border">{o.name}</td>
                   <td className="p-4 border font-medium text-gray-700">{o.position}</td>
                   <td className="p-4 border text-center">
@@ -362,9 +362,9 @@ export default function Settings() {
           placeholder="Enter the default template text for certificates..."
         ></textarea>
 
-        <p className="text-sm mt-3 text-gray-500 flex items-center gap-2">
-          <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-mono">{"{{name}}"}</span>
-          <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-mono">{"{{purpose}}"}</span>
+        <p className="text-sm mt-3 text-gray-500 flex flex-wrap items-center gap-2">
+          <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-mono text-xs">{"{{name}}"}</span>
+          <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-mono text-xs">{"{{purpose}}"}</span>
           <span>Use these tags to auto-fill details.</span>
         </p>
       </section>
@@ -372,10 +372,10 @@ export default function Settings() {
       {/* -----------------------------------------------------
            SECTION: BACKUP & RESTORE
       ------------------------------------------------------ */}
-      <section className="mb-12 bg-slate-50 p-6 rounded-2xl border-2 border-slate-100">
+      <section className="mb-12 bg-slate-50 p-4 md:p-6 rounded-2xl border-2 border-slate-100">
         <h2 className="text-xl font-semibold mb-4 text-slate-800">System Management</h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button onClick={backupData} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-4 rounded-xl font-bold shadow-lg transition flex items-center justify-center gap-2">
             Backup System
           </button>
@@ -386,7 +386,7 @@ export default function Settings() {
           </label>
 
           <button onClick={resetSystem} className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-4 rounded-xl font-bold shadow-lg transition flex items-center justify-center gap-2">
-            Reset All Data
+            Reset Data
           </button>
         </div>
       </section>

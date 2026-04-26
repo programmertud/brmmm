@@ -97,8 +97,8 @@ export default function Blotter() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto mt-6 bg-white p-8 rounded-xl shadow-md">
-      <h1 className="text-3xl font-bold mb-8 text-center text-red-700">
+    <div className="max-w-5xl mx-auto mt-4 md:mt-6 bg-white p-4 md:p-8 rounded-xl shadow-md">
+      <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center text-red-700">
         BLOTTER MANAGEMENT
       </h1>
 
@@ -110,7 +110,7 @@ export default function Blotter() {
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-5 mb-10 bg-gray-50 p-6 rounded-lg">
+      <form onSubmit={handleSubmit} className="space-y-5 mb-10 bg-gray-50 p-4 md:p-6 rounded-lg">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <input
             type="text"
@@ -191,8 +191,8 @@ export default function Blotter() {
       </form>
 
       {/* Blotter Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full border border-gray-300 text-sm">
+      <div className="overflow-x-auto border rounded-lg shadow-sm border-gray-200">
+        <table className="w-full min-w-[800px] border-collapse text-sm">
           <thead className="bg-red-100 text-red-800">
             <tr>
               <th className="border px-4 py-3 text-left">Complainant</th>

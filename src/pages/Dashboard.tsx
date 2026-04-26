@@ -136,7 +136,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-10 p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-4xl font-bold text-center text-green-800">
+      <h1 className="text-2xl md:text-4xl font-bold text-center text-green-800">
         Barangay Rizal Management System
       </h1>
 
@@ -197,7 +197,7 @@ export default function Dashboard() {
       </div>
 
       {/* Secondary summary cards: Complaints & Announcements */}
-      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-2xl shadow-xl border-l-8 border-red-500 flex items-center gap-5 hover:shadow-2xl transition">
           <FaCommentDots className="text-6xl text-red-500" />
           <div>
@@ -255,8 +255,8 @@ export default function Dashboard() {
 
       {/* QUICK ACTIONS - Now with Requests */}
       <div className="mt-12">
-        <h2 className="text-3xl font-bold text-gray-800 text-center mb-10">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-10">Quick Actions</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
           {/* Residents */}
           <Link
             to="/admin/residents"

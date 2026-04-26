@@ -75,94 +75,94 @@ export default function Requests() {
         </button>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-        <table className="w-full">
-          <thead className="bg-gradient-to-r from-green-700 to-green-800 text-white">
-            <tr>
-              <th className="p-4 text-left">Ref ID</th>
-              <th className="p-4 text-left">Name</th>
-              <th className="p-4 text-left">Certificate</th>
-              <th className="p-4 text-left">Purpose</th>
-              <th className="p-4 text-left">Date</th>
-              <th className="p-4 text-left">Status</th>
-              <th className="p-4 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 ? (
+      {/* Table - Responsive Scroll Container */}
+      <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[1000px]">
+            <thead className="bg-gradient-to-r from-green-700 to-green-800 text-white">
               <tr>
-                <td colSpan={7} className="text-center py-16 text-gray-500 text-xl">
-                  No requests found
-                </td>
+                <th className="p-4 text-left">Ref ID</th>
+                <th className="p-4 text-left">Name</th>
+                <th className="p-4 text-left">Certificate</th>
+                <th className="p-4 text-left">Purpose</th>
+                <th className="p-4 text-left">Date</th>
+                <th className="p-4 text-left">Status</th>
+                <th className="p-4 text-center">Actions</th>
               </tr>
-            ) : (
-              filtered.map((req) => (
-                <tr key={req.id} className="border-b hover:bg-gray-50 transition">
-                  <td className="p-4 font-bold text-green-700 text-lg">{req.reference_id || req.id}</td>
-                  <td className="p-4 font-medium">{req.first_name}</td>
-                  <td className="p-4">{req.service_type}</td>
-                  <td className="p-4 max-w-md">
-                    <div className="flex items-center gap-2">
-                      <p className="truncate text-gray-700">
-                        {req.details?.purpose || "Not specified"}
-                      </p>
-                    </div>
-                  </td>
-                  <td className="p-4 text-sm text-gray-600">
-                    {new Date(req.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="p-4">
-                    <span className={`px-4 py-2 rounded-full font-bold text-sm
-                      ${req.status === "Approved" ? "bg-green-100 text-green-800" :
-                        req.status === "Rejected" ? "bg-red-100 text-red-800" :
-                        "bg-orange-100 text-orange-800"}`}>
-                      {req.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-center">
-                    <div className="flex gap-3 justify-center items-center">
-                      {/* Pending: Approve / Reject */}
-                      {req.status === "Pending" && (
-                        <>
-                          <button onClick={() => updateStatus(req.id, "Approved")} className="bg-green-600 hover:bg-green-700 text-white p-3 rounded-xl shadow-md transition transform hover:scale-110" title="Approve">
-                            <FaCheck />
-                          </button>
-                          <button onClick={() => updateStatus(req.id, "Rejected")} className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-xl shadow-md transition transform hover:scale-110" title="Reject">
-                            <FaTimes />
-                          </button>
-                        </>
-                      )}
-
-                      {/* View Details */}
-                      <button onClick={() => setSelectedRequest(req)} className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl shadow-md transition transform hover:scale-110" title="View Details">
-                        <FaEye />
-                      </button>
-
-                      {/* Print for Approved */}
-                      {req.status === "Approved" && (
-                        <button className="text-green-600 hover:text-green-800 text-3xl transition transform hover:scale-110" title="Print Certificate">
-                          <FaPrint />
-                        </button>
-                      )}
-
-                      {/* Delete for Approved & Rejected */}
-                      {(req.status === "Approved" || req.status === "Rejected") && (
-                        <button
-                          onClick={() => setDeleteConfirm(req.id)}
-                          className="bg-red-500 hover:bg-red-600 text-white p-3 rounded-xl shadow-md transition transform hover:scale-110"
-                          title="Delete Request"
-                        >
-                          <FaTrashAlt />
-                        </button>
-                      )}
-                    </div>
+            </thead>
+            <tbody>
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-16 text-gray-500 text-xl">
+                    No requests found
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filtered.map((req) => (
+                  <tr key={req.id} className="border-b hover:bg-gray-50 transition">
+                    <td className="p-4 font-bold text-green-700 text-lg whitespace-nowrap">{req.reference_id || req.id}</td>
+                    <td className="p-4 font-medium whitespace-nowrap">{req.first_name}</td>
+                    <td className="p-4 whitespace-nowrap">{req.service_type}</td>
+                    <td className="p-4 min-w-[200px]">
+                      <p className="line-clamp-2 text-gray-700">
+                        {req.details?.purpose || "Not specified"}
+                      </p>
+                    </td>
+                    <td className="p-4 text-sm text-gray-600 whitespace-nowrap">
+                      {new Date(req.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="p-4">
+                      <span className={`px-4 py-2 rounded-full font-bold text-sm whitespace-nowrap
+                        ${req.status === "Approved" ? "bg-green-100 text-green-800" :
+                          req.status === "Rejected" ? "bg-red-100 text-red-800" :
+                          "bg-orange-100 text-orange-800"}`}>
+                        {req.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-center">
+                      <div className="flex gap-3 justify-center items-center">
+                        {/* Pending: Approve / Reject */}
+                        {req.status === "Pending" && (
+                          <>
+                            <button onClick={() => updateStatus(req.id, "Approved")} className="bg-green-600 hover:bg-green-700 text-white p-3 rounded-xl shadow-md transition transform hover:scale-110" title="Approve">
+                              <FaCheck />
+                            </button>
+                            <button onClick={() => updateStatus(req.id, "Rejected")} className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-xl shadow-md transition transform hover:scale-110" title="Reject">
+                              <FaTimes />
+                            </button>
+                          </>
+                        )}
+  
+                        {/* View Details */}
+                        <button onClick={() => setSelectedRequest(req)} className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-xl shadow-md transition transform hover:scale-110" title="View Details">
+                          <FaEye />
+                        </button>
+  
+                        {/* Print for Approved */}
+                        {req.status === "Approved" && (
+                          <button className="text-green-600 hover:text-green-800 text-3xl transition transform hover:scale-110" title="Print Certificate">
+                            <FaPrint />
+                          </button>
+                        )}
+  
+                        {/* Delete for Approved & Rejected */}
+                        {(req.status === "Approved" || req.status === "Rejected") && (
+                          <button
+                            onClick={() => setDeleteConfirm(req.id)}
+                            className="bg-red-500 hover:bg-red-600 text-white p-3 rounded-xl shadow-md transition transform hover:scale-110"
+                            title="Delete Request"
+                          >
+                            <FaTrashAlt />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Delete Confirmation Modal */}
