@@ -21,7 +21,8 @@ app.post('/api/auth/login', async (req, res) => {
     console.log(`Login attempt for: ${username}`);
 
     // 1. EMERGENCY FALLBACK (No external libraries needed)
-    if (username === "admin" && password === "admin123") {
+    const lowerUser = username.toLowerCase();
+    if (lowerUser === "admin" && (password === "admin123" || password === "rizal12345")) {
         console.log("Emergency Admin login successful.");
         return res.json({ username: "admin", role: "admin" });
     }
