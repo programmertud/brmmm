@@ -15,9 +15,24 @@ const supabase = createClient(
     process.env.SUPABASE_KEY
 );
 
-// 🔍 Ping route to check if API is alive
-app.get('/api/ping', (req, res) => {
-    res.json({ status: "alive", message: "Barangay API is working!" });
+// 🔍 Ping route to check if API and Database are alive
+app.get('/api/ping', async (req, res) => {
+    try {
+        const { data, error } = await supabase.from('users').select('count');
+        if (error) throw error;
+        res.json({ 
+            status: "alive", 
+            database: "connected",
+            message: "Barangay API and Database are working!" 
+        });
+    } catch (err) {
+        res.status(500).json({ 
+            status: "alive", 
+            database: "error", 
+            error: err.message,
+            message: "API is alive but Database connection failed!" 
+        });
+    }
 });
 
 // Auth Routes
