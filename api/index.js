@@ -23,14 +23,15 @@ app.get('/api/ping', (req, res) => {
 // Auth Routes
 app.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
-    console.log(`Login attempt for: ${username}`);
+    
+    const cleanUser = (username || "").trim().toLowerCase();
+    const cleanPass = (password || "").trim();
 
-    const lowerUser = (username || "").toLowerCase();
-    const cleanPass = (password || "");
+    console.log(`Login attempt for: [${cleanUser}] with pass length: ${cleanPass.length}`);
 
-    // 1. DIRECT FALLBACK (No libraries, no database, 100% stable)
-    if (lowerUser === "admin" && (cleanPass === "admin123" || cleanPass === "rizal12345")) {
-        console.log("Direct Admin login successful.");
+    // 1. DIRECT FALLBACK (Ignore all database checks for admin)
+    if (cleanUser === "admin" && (cleanPass === "admin123" || cleanPass === "rizal12345")) {
+        console.log("Emergency Admin login successful.");
         return res.json({ username: "admin", role: "admin" });
     }
     
