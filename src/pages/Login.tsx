@@ -17,11 +17,11 @@ export default function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    const ok = await login(username, password);
-    if (ok) {
+    const result = await login(username, password);
+    if (result.success) {
       navigate("/admin/dashboard");   
     } else {
-      setError("Invalid username or password");
+      setError(result.message || "Invalid username or password");
     }
   };
 

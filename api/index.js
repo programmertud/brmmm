@@ -32,24 +32,34 @@ app.get('/api/ping', async (req, res) => {
 
 // Auth Routes
 app.post(['/api/auth/login', '/auth/login'], async (req, res) => {
-    const { username, password } = req.body;
-    const cleanUser = (username || "").replace(/[^\x20-\x7E]/g, "").trim().toLowerCase();
-    const cleanPass = (password || "").replace(/[^\x20-\x7E]/g, "").trim();
-
-    // 1. EMERGENCY FALLBACK
-    if (cleanUser === "admin" && (cleanPass === "admin123" || cleanPass === "rizal12345")) {
-        console.log("Emergency Admin login successful.");
-        return res.json({ username: "admin", role: "admin" });
-    }
-    
-    // 2. Regular Login
     try {
+        const { username, password } = req.body;
+        console.log("Login Attempt - Received:", { username, hasPassword: !!password });
+        
+        const cleanUser = (username || "").replace(/[^\x20-\x7E]/g, "").trim().toLowerCase();
+        const cleanPass = (password || "").replace(/[^\x20-\x7E]/g, "").trim();
+
+        console.log("Login Attempt - Cleaned:", { cleanUser, passMatch: cleanPass === "rizal12345" });
+
+        // 1. EMERGENCY FALLBACK
+        if (cleanUser === "admin" && (cleanPass === "admin123" || cleanPass === "rizal12345")) {
+            console.log("Emergency Admin login successful.");
+            return res.json({ username: "admin", role: "admin" });
+        }
+        
+        // 2. Regular Login
         const { data: user, error } = await supabase.from('users').select('*').eq('username', cleanUser).single();
         if (user && user.password === cleanPass) {
+             console.log("Regular login successful for:", cleanUser);
              return res.json({ username: user.username, role: user.role });
         }
-    } catch (err) {}
-    res.status(401).json({ message: "Invalid credentials" });
+        
+        console.warn("Login failed for:", cleanUser);
+        res.status(401).json({ message: "Invalid credentials. Please check your username and password." });
+    } catch (err) {
+        console.error("Login Server Error:", err.message);
+        res.status(500).json({ message: "Server error: " + err.message });
+    }
 });
 
 // Applications Routes (With Mapping)
@@ -77,12 +87,12 @@ app.post(['/api/applications', '/applications'], async (req, res) => {
         
         const newApp = {
             reference_id: referenceId,
-            first_name: payload.full_name || payload.fullName || "Resident",
+            first_name: payload.full_name || payload.fullName || payload.name || "Resident",
             last_name: "Application",
             service_type: payload.certificate_type || payload.certificateType || "General",
             status: "Pending",
             created_at: new Date().toISOString(),
-            details: payload // Save EVERYTHING in JSONB just in case
+            details: payload 
         };
 
         const { data, error } = await supabase.from('applications').insert([newApp]).select().single();

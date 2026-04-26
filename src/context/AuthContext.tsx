@@ -15,7 +15,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string, password: string) => Promise<boolean>;
+  login: (username: string, password: string) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean; // ← This prevents flash of login page
@@ -55,7 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loadSavedUser();
   }, []);
 
-  const login = async (username: string, password: string): Promise<boolean> => {
+  const login = async (username: string, password: string): Promise<{ success: boolean; message?: string }> => {
     try {
       const response = await api.post("/auth/login", { username, password });
 
@@ -66,10 +66,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       setUser(safeUser);
       localStorage.setItem("barangay_user", JSON.stringify(safeUser));
-      return true;
-    } catch (error) {
+      return { success: true };
+    } catch (error: any) {
       console.error("Login failed", error);
-      return false;
+      const msg = error.response?.data?.error || error.response?.data?.message || error.message || "Login failed";
+      return { success: false, message: msg };
     }
   };
 

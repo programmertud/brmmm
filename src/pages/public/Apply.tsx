@@ -36,9 +36,10 @@ export default function Apply() {
       const backendRefId = response.data.reference_id as string;
       setReferenceId(backendRefId);
       setSubmitted(true);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError("Failed to submit application. Please try again.");
+      const msg = err.response?.data?.error || err.response?.data?.message || err.message;
+      setError(`Failed: ${msg}`);
     } finally {
       setLoading(false);
     }
