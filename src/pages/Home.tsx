@@ -1,6 +1,7 @@
 // src/pages/Home.tsx
 import React from "react";
 import { Link } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import { 
   FaFileAlt, 
   FaCommentDots, 
@@ -21,53 +22,9 @@ import BarangayHall from "../assets/logo.png"; // Replace with real photo
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white font-sans">
+    <div className="min-h-screen bg-gradient-to-b from-green-50 to-white font-sans overflow-x-hidden">
 
-      {/* Header */}
-      <header className="bg-white shadow-xl sticky top-0 z-50 border-b-4 border-green-700">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 md:gap-5">
-            <img
-              src={BarangayLogo}
-              alt="Barangay Rizal Seal"
-              className="w-12 h-12 md:w-16 md:h-16 rounded-full border-2 md:border-4 border-green-700 shadow-2xl object-cover"
-            />
-            <div className="text-center md:text-left">
-              <h1 className="text-xl md:text-3xl font-black text-green-800 tracking-wider">
-                BARANGAY RIZAL
-              </h1>
-              <p className="text-xs md:text-base font-bold text-green-600">City of Surigao</p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-2 md:gap-4">
-            <Link
-              to="/"
-              className="bg-green-600 hover:bg-green-700 text-white px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-lg transition transform hover:scale-105"
-            >
-              HOME
-            </Link>
-            <Link
-              to="/about"
-              className="bg-green-600 hover:bg-green-700 text-white px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-lg transition transform hover:scale-105"
-            >
-              ABOUT
-            </Link>
-            <Link
-              to="/officials"
-              className="bg-green-600 hover:bg-green-700 text-white px-4 md:px-8 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-lg transition transform hover:scale-105"
-            >
-              OFFICIALS
-            </Link>
-            <Link
-              to="/login"
-              className="bg-yellow-500 hover:bg-yellow-600 text-green-900 px-6 md:px-10 py-2 md:py-3 rounded-full text-xs md:text-base font-bold shadow-xl transition transform hover:scale-110 border-2 md:border-4 border-white"
-            >
-              STAFF LOGIN
-            </Link>
-          </div>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Hero Section */}
       <section className="relative min-h-[80vh] md:h-screen flex items-center justify-center overflow-hidden">

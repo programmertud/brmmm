@@ -9,6 +9,8 @@ interface AnnouncementItem {
   desc: string;
 }
 
+import Navbar from "../../components/Navbar";
+
 export default function Announcements() {
   const [items, setItems] = useState<AnnouncementItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -31,8 +33,9 @@ export default function Announcements() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-20 font-sans">
-      <div className="max-w-7xl mx-auto px-6">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white font-sans overflow-x-hidden">
+      <Navbar />
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20">
         
         {/* Premium Header */}
         <div className="text-center mb-20 relative">

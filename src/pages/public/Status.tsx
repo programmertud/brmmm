@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { FaSearch, FaClock, FaCheckCircle, FaTimesCircle, FaHome, FaPhone, FaInfoCircle } from "react-icons/fa";
 import api from "../../services/api";
+import Navbar from "../../components/Navbar";
 
 export default function Status() {
   const [refId, setRefId] = useState("");
@@ -32,32 +33,33 @@ export default function Status() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white py-16">
-      <div className="max-w-4xl mx-auto px-6 text-center">
+    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-white font-sans overflow-x-hidden">
+      <Navbar />
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-12 md:py-16 text-center">
         {/* Header */}
-        <FaSearch className="text-8xl text-purple-600 mx-auto mb-6" />
-        <h1 className="text-5xl font-bold text-purple-800">Check Application Status</h1>
-        <p className="text-xl text-gray-600 mt-4">
+        <FaSearch className="text-6xl md:text-8xl text-purple-600 mx-auto mb-6 drop-shadow-xl" />
+        <h1 className="text-3xl md:text-5xl font-black text-purple-800 tracking-tight uppercase">CHECK <span className="text-purple-600">STATUS</span></h1>
+        <p className="text-lg md:text-xl text-gray-600 mt-4 px-2">
           Enter your Reference ID (e.g., BR-2025-11-00123)
         </p>
 
         {/* Search Form */}
-        <form onSubmit={checkStatus} className="mt-12">
-          <div className="flex flex-col md:flex-row gap-6 max-w-3xl mx-auto">
+        <form onSubmit={checkStatus} className="mt-10 md:mt-12">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-6 max-w-3xl mx-auto">
             <input
               type="text"
-              placeholder="BR-2025-11-00876"
+              placeholder="BR-XXXX-XXXX"
               value={refId}
               onChange={(e) => setRefId(e.target.value)}
-              className="flex-1 px-8 py-6 text-2xl border-4 border-purple-300 rounded-2xl focus:border-purple-700 outline-none text-center font-mono tracking-widest uppercase"
+              className="flex-1 px-6 md:px-8 py-4 md:py-6 text-xl md:text-2xl border-4 border-purple-200 rounded-2xl focus:border-purple-600 outline-none text-center font-mono tracking-widest uppercase transition-all"
               required
             />
             <button
               type="submit"
               disabled={loading}
-              className="bg-purple-700 hover:bg-purple-800 disabled:opacity-60 disabled:cursor-not-allowed text-white px-12 py-6 rounded-2xl text-xl font-bold shadow-xl transition transform hover:scale-105"
+              className="bg-purple-700 hover:bg-purple-800 disabled:opacity-60 disabled:cursor-not-allowed text-white px-8 md:px-12 py-4 md:py-6 rounded-2xl text-lg md:text-xl font-black shadow-xl transition transform active:scale-95"
             >
-              {loading ? "CHECKING..." : "CHECK STATUS"}
+              {loading ? "SEARCHING..." : "SEARCH"}
             </button>
           </div>
         </form>
@@ -70,85 +72,69 @@ export default function Status() {
 
         {/* Result */}
         {result && (
-          <div className="mt-16 bg-white rounded-3xl shadow-2xl p-10 overflow-hidden">
+          <div className="mt-12 md:mt-16 bg-white rounded-[40px] shadow-2xl p-6 md:p-12 overflow-hidden border-2 border-purple-100">
             {result.status === "Not Found" ? (
-              <div className="text-center py-16">
-                <FaTimesCircle className="text-9xl text-red-600 mx-auto mb-8" />
-                <h2 className="text-4xl font-bold text-red-700">Reference ID Not Found</h2>
-                <p className="text-xl text-gray-600 mt-6">
+              <div className="text-center py-10 md:py-16">
+                <FaTimesCircle className="text-7xl md:text-9xl text-red-600 mx-auto mb-8" />
+                <h2 className="text-2xl md:text-4xl font-black text-red-700 uppercase">NOT FOUND</h2>
+                <p className="text-lg md:text-xl text-gray-500 mt-6 px-4">
                   Please double-check your Reference ID and try again.
                 </p>
               </div>
             ) : (
               <>
                 {/* Status Header */}
-                <div className="text-center mb-10">
-                  <h2 className="text-6xl font-black text-purple-800">
-                    {result.status === "Pending" ? "UNDER REVIEW" : "READY FOR PICKUP!"}
+                <div className="text-center mb-8 md:mb-12">
+                  <h2 className={`text-4xl md:text-6xl font-black ${result.status === 'Pending' ? 'text-orange-600' : 'text-green-700'}`}>
+                    {result.status === "Pending" ? "PENDING" : "APPROVED"}
                   </h2>
-                  <p className="text-2xl text-gray-600 mt-4">Reference ID: <span className="font-black text-green-700">{result.reference_id}</span></p>
+                  <p className="text-lg md:text-2xl text-gray-500 mt-4 font-bold">ID: <span className="text-purple-800 font-black">{result.reference_id}</span></p>
                 </div>
 
                 {/* Status Icon */}
-                <div className="flex justify-center mb-10">
+                <div className="flex justify-center mb-8 md:mb-12">
                   {result.status === "Pending" ? (
-                    <FaClock className="text-9xl text-orange-500 animate-pulse" />
+                    <FaClock className="text-7xl md:text-9xl text-orange-500 animate-pulse" />
                   ) : (
-                    <FaCheckCircle className="text-9xl text-green-500" />
+                    <FaCheckCircle className="text-7xl md:text-9xl text-green-600" />
                   )}
                 </div>
 
                 {/* Details Card */}
-                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl p-10 border-4 border-green-300">
-                  <h3 className="text-3xl font-bold text-green-800 mb-8 text-center">
+                <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-[30px] p-6 md:p-10 border-2 border-green-200">
+                  <h3 className="text-xl md:text-3xl font-black text-green-800 mb-6 md:mb-8 text-center uppercase tracking-tight">
                     Application Details
                   </h3>
-                  <div className="grid md:grid-cols-2 gap-8 text-left text-lg">
-                    <div className="space-y-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 text-left text-base md:text-lg">
+                    <div className="space-y-4 md:space-y-5">
                       <div className="flex items-start gap-3">
-                        <FaInfoCircle className="text-2xl text-green-700 mt-1" />
+                        <FaInfoCircle className="text-xl md:text-2xl text-green-700 mt-1" />
                         <div>
-                           <p className="font-bold text-green-800">Full Name</p>
-                           <p className="text-gray-700">{result.first_name}</p>
+                           <p className="font-black text-green-800 text-sm md:text-base uppercase tracking-wider">Full Name</p>
+                           <p className="text-gray-800 font-bold">{result.first_name}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
-                        <FaHome className="text-2xl text-green-700 mt-1" />
+                        <FaHome className="text-xl md:text-2xl text-green-700 mt-1" />
                         <div>
-                           <p className="font-bold text-green-800">Address</p>
-                           <p className="text-gray-700">{result.details?.address || "N/A"}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start gap-3">
-                        <FaPhone className="text-2xl text-green-700 mt-1" />
-                        <div>
-                           <p className="font-bold text-green-800">Contact</p>
-                           <p className="text-gray-700">{result.details?.contact || "N/A"}</p>
+                           <p className="font-black text-green-800 text-sm md:text-base uppercase tracking-wider">Address</p>
+                           <p className="text-gray-800 font-bold">{result.details?.address || "N/A"}</p>
                         </div>
                       </div>
                     </div>
 
-                    <div className="space-y-5">
+                    <div className="space-y-4 md:space-y-5">
                       <div>
-                        <p className="font-bold text-green-800 mb-2">Certificate Type</p>
-                        <p className="bg-white px-6 py-3 rounded-xl text-green-700 font-semibold text-xl text-center shadow">
+                        <p className="font-black text-green-800 text-sm md:text-base uppercase tracking-wider mb-2">Service</p>
+                        <p className="bg-white px-4 py-2 rounded-xl text-green-700 font-black text-base md:text-lg border border-green-200 shadow-sm">
                           {result.service_type}
                         </p>
                       </div>
 
                       <div>
-                        <p className="font-bold text-green-800 mb-2">Purpose of Request</p>
-                        <div className="bg-white p-6 rounded-xl shadow-inner border-2 border-green-200">
-                          <p className="italic text-gray-800 leading-relaxed">
-                            "{result.details?.purpose || "Not specified"}"
-                          </p>
-                        </div>
-                      </div>
-
-                      <div>
-                        <p className="font-bold text-green-800 mb-2">Submitted On</p>
-                        <p className="text-2xl font-bold text-green-700">
-                          {new Date(result.created_at).toLocaleDateString()}
+                        <p className="font-black text-green-800 text-sm md:text-base uppercase tracking-wider mb-2">Submitted</p>
+                        <p className="text-xl md:text-2xl font-black text-green-700">
+                          {new Date(result.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
                     </div>
