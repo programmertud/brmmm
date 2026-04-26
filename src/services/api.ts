@@ -6,7 +6,12 @@ const getBaseURL = () => {
   // Allow override for local development if needed
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   
-  // Using "/api" directly works perfectly on both Vercel and local (with proxy)
+  if (typeof window !== "undefined") {
+    const origin = window.location.origin;
+    // Ensure we have a clean /api suffix with an absolute origin
+    return origin.endsWith('/') ? `${origin}api` : `${origin}/api`;
+  }
+
   return "/api";
 };
 

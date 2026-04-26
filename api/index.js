@@ -6,7 +6,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
 
 // Initialize Supabase
@@ -27,7 +31,7 @@ app.get('/api/ping', async (req, res) => {
 });
 
 // Auth Routes
-app.post('/api/auth/login', async (req, res) => {
+app.post(['/api/auth/login', '/auth/login'], async (req, res) => {
     const { username, password } = req.body;
     const cleanUser = (username || "").replace(/[^\x20-\x7E]/g, "").trim().toLowerCase();
     const cleanPass = (password || "").replace(/[^\x20-\x7E]/g, "").trim();
@@ -49,12 +53,12 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 // Applications Routes (With Mapping)
-app.get('/api/applications', async (req, res) => {
+app.get(['/api/applications', '/applications'], async (req, res) => {
     const { data } = await supabase.from('applications').select('*').order('created_at', { ascending: false });
     res.json(data || []);
 });
 
-app.get('/api/applications/:refId', async (req, res) => {
+app.get(['/api/applications/:refId', '/applications/:refId'], async (req, res) => {
     const { refId } = req.params;
     const { data, error } = await supabase
         .from('applications')
@@ -66,7 +70,7 @@ app.get('/api/applications/:refId', async (req, res) => {
     res.json(data);
 });
 
-app.post('/api/applications', async (req, res) => {
+app.post(['/api/applications', '/applications'], async (req, res) => {
     try {
         const referenceId = "REF-" + Math.random().toString(36).substr(2, 9).toUpperCase();
         const payload = req.body;
@@ -94,12 +98,12 @@ app.post('/api/applications', async (req, res) => {
 });
 
 // Complaints (With Mapping)
-app.get('/api/complaints', async (req, res) => {
+app.get(['/api/complaints', '/complaints'], async (req, res) => {
     const { data } = await supabase.from('complaints').select('*').order('created_at', { ascending: false });
     res.json(data || []);
 });
 
-app.post('/api/complaints', async (req, res) => {
+app.post(['/api/complaints', '/complaints'], async (req, res) => {
     try {
         const payload = req.body;
         const newComplaint = {
@@ -123,12 +127,12 @@ app.post('/api/complaints', async (req, res) => {
 });
 
 // Announcements
-app.get('/api/announcements', async (req, res) => {
+app.get(['/api/announcements', '/announcements'], async (req, res) => {
     const { data } = await supabase.from('announcements').select('*').order('created_at', { ascending: false });
     res.json(data || []);
 });
 
-app.post('/api/announcements', async (req, res) => {
+app.post(['/api/announcements', '/announcements'], async (req, res) => {
     try {
         const payload = req.body;
         const title = payload.title || "No Title";
@@ -159,7 +163,7 @@ app.post('/api/announcements', async (req, res) => {
 });
 
 // --- Applications Actions ---
-app.patch('/api/applications/:id/status', async (req, res) => {
+app.patch(['/api/applications/:id/status', '/applications/:id/status'], async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
     try {
@@ -176,7 +180,7 @@ app.patch('/api/applications/:id/status', async (req, res) => {
     }
 });
 
-app.delete('/api/applications/:id', async (req, res) => {
+app.delete(['/api/applications/:id', '/applications/:id'], async (req, res) => {
     const { id } = req.params;
     try {
         const { error } = await supabase.from('applications').delete().eq('id', id);
@@ -188,7 +192,7 @@ app.delete('/api/applications/:id', async (req, res) => {
 });
 
 // --- Complaints Actions ---
-app.patch('/api/complaints/:id', async (req, res) => {
+app.patch(['/api/complaints/:id', '/complaints/:id'], async (req, res) => {
     const { id } = req.params;
     const { status } = req.body;
     try {
