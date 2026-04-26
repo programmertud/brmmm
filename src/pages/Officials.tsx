@@ -208,5 +208,6 @@ export default function Officials() {
         <p className="mt-2 text-sm">© 2025 Barangay Rizal Administration</p>
       </div>
     </div>
+  </div>
   );
 }
