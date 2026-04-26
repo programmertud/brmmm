@@ -129,9 +129,25 @@ app.get('/api/announcements', async (req, res) => {
 });
 
 app.post('/api/announcements', async (req, res) => {
-    const { data, error } = await supabase.from('announcements').insert([{ ...req.body, created_at: new Date().toISOString() }]).select().single();
-    if (error) return res.status(500).json({ error: error.message });
-    res.status(201).json(data);
+    try {
+        const payload = req.body;
+        const newAnnouncement = {
+            title: payload.title || "No Title",
+            desc: payload.body || payload.desc || payload.description || "No Content",
+            date: payload.date || new Date().toLocaleDateString(),
+            created_at: new Date().toISOString()
+        };
+
+        const { data, error } = await supabase.from('announcements').insert([newAnnouncement]).select().single();
+        if (error) {
+            console.error("Supabase Announcement Error:", error.message);
+            return res.status(500).json({ error: error.message });
+        }
+        res.status(201).json(data);
+    } catch (err) {
+        console.error("Server Announcement Error:", err.message);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 export default app;
