@@ -1,83 +1,80 @@
 import express from 'express';
 import cors from 'cors';
-import fs from 'fs';
 import bcrypt from 'bcryptjs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+dotenv.config();
 
 const app = express();
-
-// Vercel path handling
-const DB_FILE = path.join(process.cwd(), 'backend', 'db.json');
-
 app.use(cors());
 app.use(express.json());
 
-// Helper to read/write DB
-const readDB = () => {
-    try {
-        if (!fs.existsSync(DB_FILE)) {
-            return {
-                users: [{ username: "admin", password: bcrypt.hashSync("admin123", 10), role: "admin" }],
-                applications: [], complaints: [], announcements: []
-            };
-        }
-        return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-    } catch (err) {
-        console.error("DB Read Error:", err);
-        return { users: [], applications: [], complaints: [], announcements: [] };
-    }
-};
-
-const writeDB = (data) => {
-    try {
-        // NOTE: This will fail on Vercel production as it's read-only
-        fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
-    } catch (err) {
-        console.warn("DB Write Warning (Likely read-only filesystem):", err.message);
-    }
-};
+// Initialize Supabase
+const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_KEY
+);
 
 // Auth Routes
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
-    const db = readDB();
-    const user = db.users.find(u => u.username === username);
+    
+    // Check if user exists in Supabase
+    const { data: user, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('username', username)
+        .single();
 
-    if (user && bcrypt.compareSync(password, user.password)) {
+    if (error || !user) {
+        // FALLBACK: If no users exist yet, allow initial admin login with admin/admin123
+        // and automatically create the user in Supabase
+        if (username === "admin" && password === "admin123") {
+            const hashedPassword = bcrypt.hashSync("admin123", 10);
+            await supabase.from('users').insert([{ username: "admin", password: hashedPassword, role: "admin" }]);
+            return res.json({ username: "admin", role: "admin" });
+        }
+        return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    if (bcrypt.compareSync(password, user.password)) {
         return res.json({ username: user.username, role: user.role });
     }
     res.status(401).json({ message: "Invalid credentials" });
 });
 
-app.post('/api/auth/change-password', (req, res) => {
+app.post('/api/auth/change-password', async (req, res) => {
     const { username, oldPassword, newPassword } = req.body;
-    const db = readDB();
-    const userIndex = db.users.findIndex(u => u.username === username);
+    
+    const { data: user, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('username', username)
+        .single();
 
-    if (userIndex === -1) return res.status(404).json({ message: "User not found" });
+    if (error || !user) return res.status(404).json({ message: "User not found" });
 
-    const user = db.users[userIndex];
     if (!bcrypt.compareSync(oldPassword, user.password)) {
         return res.status(401).json({ message: "Incorrect old password" });
     }
 
-    db.users[userIndex].password = bcrypt.hashSync(newPassword, 10);
-    writeDB(db);
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+    await supabase
+        .from('users')
+        .update({ password: hashedPassword })
+        .eq('username', username);
+
     res.json({ message: "Password updated successfully" });
 });
 
 // Applications Routes
-app.get('/api/applications', (req, res) => {
-    const db = readDB();
-    res.json(db.applications || []);
+app.get('/api/applications', async (req, res) => {
+    const { data, error } = await supabase.from('applications').select('*').order('created_at', { ascending: false });
+    res.json(data || []);
 });
 
-app.post('/api/applications', (req, res) => {
-    const db = readDB();
+app.post('/api/applications', async (req, res) => {
     const referenceId = "REF-" + Math.random().toString(36).substr(2, 9).toUpperCase();
     const newApp = {
         ...req.body,
@@ -85,46 +82,54 @@ app.post('/api/applications', (req, res) => {
         status: "Pending",
         created_at: new Date().toISOString()
     };
-    if (!db.applications) db.applications = [];
-    db.applications.push(newApp);
-    writeDB(db);
-    res.status(201).json(newApp);
+    
+    const { data, error } = await supabase.from('applications').insert([newApp]).select().single();
+    if (error) return res.status(500).json({ error: error.message });
+    res.status(201).json(data);
+});
+
+app.patch('/api/applications/:referenceId/status', async (req, res) => {
+    const { data, error } = await supabase
+        .from('applications')
+        .update({ status: req.body.status })
+        .eq('reference_id', req.params.referenceId)
+        .select()
+        .single();
+    
+    if (error) return res.status(500).json({ error: error.message });
+    res.json(data);
 });
 
 // Complaints
-app.get('/api/complaints', (req, res) => {
-    const db = readDB();
-    res.json(db.complaints || []);
+app.get('/api/complaints', async (req, res) => {
+    const { data, error } = await supabase.from('complaints').select('*').order('created_at', { ascending: false });
+    res.json(data || []);
 });
 
-app.post('/api/complaints', (req, res) => {
-    const db = readDB();
+app.post('/api/complaints', async (req, res) => {
     const newComplaint = {
         ...req.body,
         created_at: new Date().toISOString()
     };
-    if (!db.complaints) db.complaints = [];
-    db.complaints.push(newComplaint);
-    writeDB(db);
-    res.status(201).json(newComplaint);
+    const { data, error } = await supabase.from('complaints').insert([newComplaint]).select().single();
+    if (error) return res.status(500).json({ error: error.message });
+    res.status(201).json(data);
 });
 
 // Announcements
-app.get('/api/announcements', (req, res) => {
-    const db = readDB();
-    res.json(db.announcements || []);
+app.get('/api/announcements', async (req, res) => {
+    const { data, error } = await supabase.from('announcements').select('*').order('created_at', { ascending: false });
+    res.json(data || []);
 });
 
-app.post('/api/announcements', (req, res) => {
-    const db = readDB();
+app.post('/api/announcements', async (req, res) => {
     const newAnnouncement = {
         ...req.body,
         created_at: new Date().toISOString()
     };
-    if (!db.announcements) db.announcements = [];
-    db.announcements.push(newAnnouncement);
-    writeDB(db);
-    res.status(201).json(newAnnouncement);
+    const { data, error } = await supabase.from('announcements').insert([newAnnouncement]).select().single();
+    if (error) return res.status(500).json({ error: error.message });
+    res.status(201).json(data);
 });
 
 export default app;

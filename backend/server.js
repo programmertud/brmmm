@@ -1,182 +1,102 @@
 import express from 'express';
 import cors from 'cors';
-import fs from 'fs';
 import bcrypt from 'bcryptjs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+dotenv.config();
 
 const app = express();
-const PORT = 5001;
-const DB_FILE = path.join(__dirname, 'db.json');
+const PORT = process.env.PORT || 5001;
 
 app.use(cors());
 app.use(express.json());
 
-// Helper to read/write DB
-const readDB = () => {
-    if (!fs.existsSync(DB_FILE)) {
-        const initialDB = {
-            users: [
-                {
-                    username: "admin",
-                    password: bcrypt.hashSync("admin123", 10),
-                    role: "admin"
-                }
-            ],
-            applications: [],
-            complaints: [],
-            announcements: []
-        };
-        fs.writeFileSync(DB_FILE, JSON.stringify(initialDB, null, 2));
-        return initialDB;
-    }
-    return JSON.parse(fs.readFileSync(DB_FILE));
-};
-
-const writeDB = (data) => {
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
-};
+// Initialize Supabase
+const supabase = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_KEY
+);
 
 // Auth Routes
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
-    const db = readDB();
-    const user = db.users.find(u => u.username === username);
+    const { data: user, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('username', username)
+        .single();
 
-    if (user && bcrypt.compareSync(password, user.password)) {
+    if (error || !user) {
+        if (username === "admin" && password === "admin123") {
+            const hashedPassword = bcrypt.hashSync("admin123", 10);
+            await supabase.from('users').insert([{ username: "admin", password: hashedPassword, role: "admin" }]);
+            return res.json({ username: "admin", role: "admin" });
+        }
+        return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    if (bcrypt.compareSync(password, user.password)) {
         return res.json({ username: user.username, role: user.role });
     }
     res.status(401).json({ message: "Invalid credentials" });
 });
 
-app.post('/api/auth/register', (req, res) => {
-    const { username, password } = req.body;
-    const db = readDB();
-
-    if (db.users.find(u => u.username === username)) {
-        return res.status(400).json({ message: "User already exists" });
-    }
-
-    const newUser = {
-        username,
-        password: bcrypt.hashSync(password, 10),
-        role: "secretary"
-    };
-
-    db.users.push(newUser);
-    writeDB(db);
-    res.status(201).json({ username: newUser.username, role: newUser.role });
-});
-
-app.post('/api/auth/change-password', (req, res) => {
+app.post('/api/auth/change-password', async (req, res) => {
     const { username, oldPassword, newPassword } = req.body;
-    const db = readDB();
-    const userIndex = db.users.findIndex(u => u.username === username);
+    const { data: user, error } = await supabase.from('users').select('*').eq('username', username).single();
 
-    if (userIndex === -1) {
-        return res.status(404).json({ message: "User not found" });
-    }
+    if (error || !user) return res.status(404).json({ message: "User not found" });
 
-    const user = db.users[userIndex];
     if (!bcrypt.compareSync(oldPassword, user.password)) {
         return res.status(401).json({ message: "Incorrect old password" });
     }
 
-    db.users[userIndex].password = bcrypt.hashSync(newPassword, 10);
-    writeDB(db);
+    const hashedPassword = bcrypt.hashSync(newPassword, 10);
+    await supabase.from('users').update({ password: hashedPassword }).eq('username', username);
     res.json({ message: "Password updated successfully" });
 });
 
 // Applications Routes
-app.get('/api/applications', (req, res) => {
-    const db = readDB();
-    res.json(db.applications);
+app.get('/api/applications', async (req, res) => {
+    const { data } = await supabase.from('applications').select('*').order('created_at', { ascending: false });
+    res.json(data || []);
 });
 
-app.post('/api/applications', (req, res) => {
-    const db = readDB();
+app.post('/api/applications', async (req, res) => {
     const referenceId = "REF-" + Math.random().toString(36).substr(2, 9).toUpperCase();
-    const newApp = {
-        ...req.body,
-        reference_id: referenceId,
-        status: "Pending",
-        created_at: new Date().toISOString()
-    };
-    db.applications.push(newApp);
-    writeDB(db);
-    res.status(201).json(newApp);
-});
-
-app.get('/api/applications/:referenceId', (req, res) => {
-    const db = readDB();
-    const app = db.applications.find(a => a.reference_id === req.params.referenceId);
-    if (app) return res.json(app);
-    res.status(404).json({ message: "Application not found" });
-});
-
-app.patch('/api/applications/:referenceId/status', (req, res) => {
-    const db = readDB();
-    const appIndex = db.applications.findIndex(a => a.reference_id === req.params.referenceId);
-    if (appIndex !== -1) {
-        db.applications[appIndex].status = req.body.status;
-        writeDB(db);
-        return res.json(db.applications[appIndex]);
-    }
-    res.status(404).json({ message: "Application not found" });
+    const newApp = { ...req.body, reference_id: referenceId, status: "Pending", created_at: new Date().toISOString() };
+    const { data, error } = await supabase.from('applications').insert([newApp]).select().single();
+    if (error) return res.status(500).json({ error: error.message });
+    res.status(201).json(data);
 });
 
 // Complaints
-app.get('/api/complaints', (req, res) => {
-    const db = readDB();
-    res.json(db.complaints);
+app.get('/api/complaints', async (req, res) => {
+    const { data } = await supabase.from('complaints').select('*').order('created_at', { ascending: false });
+    res.json(data || []);
 });
 
-app.post('/api/complaints', (req, res) => {
-    const db = readDB();
-    const newComplaint = {
-        ...req.body,
-        created_at: new Date().toISOString()
-    };
-    db.complaints.push(newComplaint);
-    writeDB(db);
-    res.status(201).json(newComplaint);
+app.post('/api/complaints', async (req, res) => {
+    const newComplaint = { ...req.body, created_at: new Date().toISOString() };
+    const { data, error } = await supabase.from('complaints').insert([newComplaint]).select().single();
+    if (error) return res.status(500).json({ error: error.message });
+    res.status(201).json(data);
 });
 
 // Announcements
-app.get('/api/announcements', (req, res) => {
-    const db = readDB();
-    res.json(db.announcements);
+app.get('/api/announcements', async (req, res) => {
+    const { data } = await supabase.from('announcements').select('*').order('created_at', { ascending: false });
+    res.json(data || []);
 });
 
-app.post('/api/announcements', (req, res) => {
-    const db = readDB();
-    const newAnnouncement = {
-        ...req.body,
-        created_at: new Date().toISOString()
-    };
-    db.announcements.push(newAnnouncement);
-    writeDB(db);
-    res.status(201).json(newAnnouncement);
+app.post('/api/announcements', async (req, res) => {
+    const newAnnouncement = { ...req.body, created_at: new Date().toISOString() };
+    const { data, error } = await supabase.from('announcements').insert([newAnnouncement]).select().single();
+    if (error) return res.status(500).json({ error: error.message });
+    res.status(201).json(data);
 });
 
-// Initialize DB on startup
-readDB();
-
-const server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-    console.log(`Database file: ${DB_FILE}`);
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT} with Supabase`);
 });
-
-server.on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-        console.error(`Port ${PORT} is already in use. Please kill the process using it.`);
-    } else {
-        console.error('Server error:', err);
-    }
-});
-
-// Keep-alive interval to prevent some environments from exiting
-setInterval(() => {}, 10000);
