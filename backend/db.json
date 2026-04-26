@@ -1,0 +1,12 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "password": "$2b$10$8aA/uRC0W7CC0HAiImndl.VrcwpUu4lwyRPNAwVLY7c0mD81Pn2pW",
+      "role": "admin"
+    }
+  ],
+  "applications": [],
+  "complaints": [],
+  "announcements": []
+}
