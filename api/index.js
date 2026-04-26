@@ -131,19 +131,35 @@ app.get('/api/announcements', async (req, res) => {
 app.post('/api/announcements', async (req, res) => {
     try {
         const payload = req.body;
+        const safeDate = payload.date || new Date().toISOString().split('T')[0];
+
         const newAnnouncement = {
             title: payload.title || "No Title",
-            desc: payload.body || payload.desc || payload.description || "No Content",
-            date: payload.date || new Date().toLocaleDateString(),
+            desc: payload.desc || payload.body || payload.content || payload.description || "No Content",
+            date: safeDate,
             created_at: new Date().toISOString()
         };
 
-        const { data, error } = await supabase.from('announcements').insert([newAnnouncement]).select().single();
+        const { data, error } = await supabase
+            .from('announcements')
+            .insert([newAnnouncement])
+            .select();
+
         if (error) {
-            console.error("Supabase Announcement Error:", error.message);
-            return res.status(500).json({ error: error.message });
+            // Fallback for tables without created_at
+            const { data: retryData, error: retryError } = await supabase
+                .from('announcements')
+                .insert([{
+                    title: newAnnouncement.title,
+                    desc: newAnnouncement.desc,
+                    date: newAnnouncement.date
+                }])
+                .select();
+
+            if (retryError) throw retryError;
+            return res.status(201).json(retryData[0]);
         }
-        res.status(201).json(data);
+        res.status(201).json(data[0]);
     } catch (err) {
         console.error("Server Announcement Error:", err.message);
         res.status(500).json({ error: err.message });
