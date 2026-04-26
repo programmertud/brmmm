@@ -15,71 +15,41 @@ const supabase = createClient(
     process.env.SUPABASE_KEY
 );
 
+// 🔍 Ping route to check if API is alive
+app.get('/api/ping', (req, res) => {
+    res.json({ status: "alive", message: "Barangay API is working!" });
+});
+
 // Auth Routes
 app.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
     console.log(`Login attempt for: ${username}`);
 
-    // 1. EMERGENCY FALLBACK (No external libraries needed)
-    const lowerUser = username.toLowerCase();
-    if (lowerUser === "admin" && (password === "admin123" || password === "rizal12345")) {
-        console.log("Emergency Admin login successful.");
+    const lowerUser = (username || "").toLowerCase();
+    const cleanPass = (password || "");
+
+    // 1. DIRECT FALLBACK (No libraries, no database, 100% stable)
+    if (lowerUser === "admin" && (cleanPass === "admin123" || cleanPass === "rizal12345")) {
+        console.log("Direct Admin login successful.");
         return res.json({ username: "admin", role: "admin" });
     }
     
-    // 2. Regular Supabase Login
+    // 2. Supabase Check (If fallback doesn't match)
     try {
-        const bcrypt = await import('bcryptjs').then(m => m.default || m);
-        
         const { data: user, error } = await supabase
             .from('users')
             .select('*')
-            .eq('username', username)
+            .eq('username', lowerUser)
             .single();
 
-        if (error || !user) {
-            console.log("User not found or Supabase error.");
-            return res.status(401).json({ message: "Invalid credentials" });
-        }
-
-        if (bcrypt.compareSync(password, user.password)) {
-            console.log("Supabase login successful.");
-            return res.json({ username: user.username, role: user.role });
+        if (user && user.password === cleanPass) {
+             return res.json({ username: user.username, role: user.role });
         }
     } catch (err) {
-        console.error("Login processing error:", err);
+        console.error("Supabase error:", err);
     }
 
     res.status(401).json({ message: "Invalid credentials" });
-});
-
-app.post('/api/auth/change-password', async (req, res) => {
-    const { username, oldPassword, newPassword } = req.body;
-    try {
-        const bcrypt = await import('bcryptjs').then(m => m.default || m);
-        
-        const { data: user, error } = await supabase
-            .from('users')
-            .select('*')
-            .eq('username', username)
-            .single();
-
-        if (error || !user) return res.status(404).json({ message: "User not found" });
-
-        if (!bcrypt.compareSync(oldPassword, user.password)) {
-            return res.status(401).json({ message: "Incorrect old password" });
-        }
-
-        const hashedPassword = bcrypt.hashSync(newPassword, 10);
-        await supabase
-            .from('users')
-            .update({ password: hashedPassword })
-            .eq('username', username);
-
-        res.json({ message: "Password updated successfully" });
-    } catch (err) {
-        res.status(500).json({ message: "Server error" });
-    }
 });
 
 // Applications Routes
@@ -90,26 +60,10 @@ app.get('/api/applications', async (req, res) => {
 
 app.post('/api/applications', async (req, res) => {
     const referenceId = "REF-" + Math.random().toString(36).substr(2, 9).toUpperCase();
-    const newApp = {
-        ...req.body,
-        reference_id: referenceId,
-        status: "Pending",
-        created_at: new Date().toISOString()
-    };
+    const newApp = { ...req.body, reference_id: referenceId, status: "Pending", created_at: new Date().toISOString() };
     const { data, error } = await supabase.from('applications').insert([newApp]).select().single();
     if (error) return res.status(500).json({ error: error.message });
     res.status(201).json(data);
-});
-
-app.patch('/api/applications/:referenceId/status', async (req, res) => {
-    const { data, error } = await supabase
-        .from('applications')
-        .update({ status: req.body.status })
-        .eq('reference_id', req.params.referenceId)
-        .select()
-        .single();
-    if (error) return res.status(500).json({ error: error.message });
-    res.json(data);
 });
 
 // Complaints
