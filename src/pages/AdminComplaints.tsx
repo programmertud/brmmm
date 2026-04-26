@@ -5,10 +5,9 @@ import api from "../services/api";
 
 interface ComplaintItem {
   id: number;
-  name: string;
-  contact: string;
+  complainant: string; // Map to name
   subject: string;
-  message: string;
+  description: string; // Map to message
   status: string;
   created_at: string;
 }
@@ -64,9 +63,11 @@ export default function AdminComplaints() {
             <tbody>
               {items.map((c) => (
                 <tr key={c.id} className="border-b hover:bg-gray-50">
-                  <td className="p-3 whitespace-nowrap">{c.created_at}</td>
-                  <td className="p-3">{c.name}</td>
-                  <td className="p-3">{c.contact}</td>
+                  <td className="p-3 whitespace-nowrap">
+                    {new Date(c.created_at).toLocaleDateString()}
+                  </td>
+                  <td className="p-3 font-medium">{c.complainant}</td>
+                  <td className="p-3 italic">{c.description}</td>
                   <td className="p-3">{c.subject}</td>
                   <td className="p-3">
                     <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 font-semibold text-xs">

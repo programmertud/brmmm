@@ -86,7 +86,7 @@ export default function Status() {
                   <h2 className="text-6xl font-black text-purple-800">
                     {result.status === "Pending" ? "UNDER REVIEW" : "READY FOR PICKUP!"}
                   </h2>
-                  <p className="text-2xl text-gray-600 mt-4">Reference ID: <span className="font-black text-green-700">{result.id}</span></p>
+                  <p className="text-2xl text-gray-600 mt-4">Reference ID: <span className="font-black text-green-700">{result.reference_id}</span></p>
                 </div>
 
                 {/* Status Icon */}
@@ -108,22 +108,22 @@ export default function Status() {
                       <div className="flex items-start gap-3">
                         <FaInfoCircle className="text-2xl text-green-700 mt-1" />
                         <div>
-                          <p className="font-bold text-green-800">Full Name</p>
-                          <p className="text-gray-700">{result.fullName}</p>
+                           <p className="font-bold text-green-800">Full Name</p>
+                           <p className="text-gray-700">{result.first_name}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
                         <FaHome className="text-2xl text-green-700 mt-1" />
                         <div>
-                          <p className="font-bold text-green-800">Address</p>
-                          <p className="text-gray-700">{result.address}</p>
+                           <p className="font-bold text-green-800">Address</p>
+                           <p className="text-gray-700">{result.details?.address || "N/A"}</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
                         <FaPhone className="text-2xl text-green-700 mt-1" />
                         <div>
-                          <p className="font-bold text-green-800">Contact</p>
-                          <p className="text-gray-700">{result.contact}</p>
+                           <p className="font-bold text-green-800">Contact</p>
+                           <p className="text-gray-700">{result.details?.contact || "N/A"}</p>
                         </div>
                       </div>
                     </div>
@@ -132,7 +132,7 @@ export default function Status() {
                       <div>
                         <p className="font-bold text-green-800 mb-2">Certificate Type</p>
                         <p className="bg-white px-6 py-3 rounded-xl text-green-700 font-semibold text-xl text-center shadow">
-                          {result.certificateType}
+                          {result.service_type}
                         </p>
                       </div>
 
@@ -140,7 +140,7 @@ export default function Status() {
                         <p className="font-bold text-green-800 mb-2">Purpose of Request</p>
                         <div className="bg-white p-6 rounded-xl shadow-inner border-2 border-green-200">
                           <p className="italic text-gray-800 leading-relaxed">
-                            "{result.purpose}"
+                            "{result.details?.purpose || "Not specified"}"
                           </p>
                         </div>
                       </div>
@@ -148,7 +148,7 @@ export default function Status() {
                       <div>
                         <p className="font-bold text-green-800 mb-2">Submitted On</p>
                         <p className="text-2xl font-bold text-green-700">
-                          {result.date} <span className="text-lg text-gray-600">at {result.time}</span>
+                          {new Date(result.created_at).toLocaleDateString()}
                         </p>
                       </div>
                     </div>

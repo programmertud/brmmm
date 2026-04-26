@@ -99,18 +99,18 @@ export default function Requests() {
             ) : (
               filtered.map((req) => (
                 <tr key={req.id} className="border-b hover:bg-gray-50 transition">
-                  <td className="p-4 font-bold text-green-700 text-lg">{req.id}</td>
-                  <td className="p-4 font-medium">{req.fullName}</td>
-                  <td className="p-4">{req.certificateType}</td>
+                  <td className="p-4 font-bold text-green-700 text-lg">{req.reference_id || req.id}</td>
+                  <td className="p-4 font-medium">{req.first_name}</td>
+                  <td className="p-4">{req.service_type}</td>
                   <td className="p-4 max-w-md">
                     <div className="flex items-center gap-2">
-                      <p className="truncate text-gray-700" title={req.purpose}>
-                        {req.purpose || "Not specified"}
+                      <p className="truncate text-gray-700">
+                        {req.details?.purpose || "Not specified"}
                       </p>
                     </div>
                   </td>
                   <td className="p-4 text-sm text-gray-600">
-                    {req.date}<br /><span className="text-xs">{req.time}</span>
+                    {new Date(req.created_at).toLocaleDateString()}
                   </td>
                   <td className="p-4">
                     <span className={`px-4 py-2 rounded-full font-bold text-sm
@@ -199,11 +199,10 @@ export default function Requests() {
           <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full p-10 max-h-screen overflow-y-auto">
             <h2 className="text-4xl font-bold text-green-800 mb-8 text-center">Request Details</h2>
             <div className="space-y-6 text-lg">
-              {/* Same as before */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <p className="font-bold text-gray-700">Reference ID</p>
-                  <p className="text-2xl font-black text-green-700">{selectedRequest.id}</p>
+                  <p className="text-2xl font-black text-green-700">{selectedRequest.reference_id || selectedRequest.id}</p>
                 </div>
                 <div>
                   <p className="font-bold text-gray-700">Status</p>
@@ -212,15 +211,26 @@ export default function Requests() {
                   </p>
                 </div>
               </div>
-              <div className="bg-gray-50 p-6 rounded-2xl"><p className="font-bold text-gray-700 mb-2">Full Name</p><p className="text-xl">{selectedRequest.fullName}</p></div>
-              <div className="bg-gray-50 p-6 rounded-2xl"><p className="font-bold text-gray-700 mb-2">Address</p><p className="text-xl">{selectedRequest.address}</p></div>
-              <div className="bg-gray-50 p-6 rounded-2xl"><p className="font-bold text-gray-700 mb-2">Contact</p><p className="text-xl">{selectedRequest.contact}</p></div>
+              <div className="bg-gray-50 p-6 rounded-2xl">
+                <p className="font-bold text-gray-700 mb-2">Full Name</p>
+                <p className="text-xl">{selectedRequest.first_name}</p>
+              </div>
+              <div className="bg-gray-50 p-6 rounded-2xl">
+                <p className="font-bold text-gray-700 mb-2">Certificate Type</p>
+                <p className="text-xl">{selectedRequest.service_type}</p>
+              </div>
+              <div className="bg-gray-50 p-6 rounded-2xl">
+                <p className="font-bold text-gray-700 mb-2">Contact</p>
+                <p className="text-xl">{selectedRequest.details?.contact || "N/A"}</p>
+              </div>
               <div className="bg-blue-50 p-6 rounded-2xl border-2 border-blue-200">
                 <p className="font-bold text-blue-800 mb-3 text-xl">Purpose of Request</p>
-                <p className="text-lg italic text-gray-800 leading-relaxed">"{selectedRequest.purpose}"</p>
+                <p className="text-lg italic text-gray-800 leading-relaxed">
+                  "{selectedRequest.details?.purpose || "Not specified"}"
+                </p>
               </div>
               <div className="text-center text-gray-600">
-                <p>Submitted on {selectedRequest.date} at {selectedRequest.time}</p>
+                <p>Submitted on {new Date(selectedRequest.created_at).toLocaleString()}</p>
               </div>
             </div>
             <button onClick={() => setSelectedRequest(null)} className="mt-10 w-full bg-gray-700 hover:bg-gray-800 text-white py-4 rounded-xl font-bold text-xl transition">

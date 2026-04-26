@@ -54,6 +54,18 @@ app.get('/api/applications', async (req, res) => {
     res.json(data || []);
 });
 
+app.get('/api/applications/:refId', async (req, res) => {
+    const { refId } = req.params;
+    const { data, error } = await supabase
+        .from('applications')
+        .select('*')
+        .eq('reference_id', refId)
+        .single();
+    
+    if (error || !data) return res.status(404).json({ message: "Not found" });
+    res.json(data);
+});
+
 app.post('/api/applications', async (req, res) => {
     try {
         const referenceId = "REF-" + Math.random().toString(36).substr(2, 9).toUpperCase();
