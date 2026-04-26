@@ -129,41 +129,58 @@ app.get('/api/announcements', async (req, res) => {
 });
 
 app.post('/api/announcements', async (req, res) => {
-    try {
-        const payload = req.body;
-        const safeDate = payload.date || new Date().toISOString().split('T')[0];
+    const payload = req.body;
+    const title = payload.title || "No Title";
+    const desc = payload.desc || payload.body || payload.content || payload.description || "No Content";
+    const safeDate = payload.date || new Date().toISOString().split('T')[0];
+    const now = new Date().toISOString();
 
-        const newAnnouncement = {
-            title: payload.title || "No Title",
-            desc: payload.desc || payload.body || payload.content || payload.description || "No Content",
-            date: safeDate,
-            created_at: new Date().toISOString()
-        };
+    console.log("Attempting robust announcement insert...");
 
-        const { data, error } = await supabase
-            .from('announcements')
-            .insert([newAnnouncement])
-            .select();
+    // 1. Try everything
+    let { data, error } = await supabase.from('announcements').insert([{
+        title, desc, date: safeDate, created_at: now
+    }]).select();
 
-        if (error) {
-            // Fallback for tables without created_at
-            const { data: retryData, error: retryError } = await supabase
-                .from('announcements')
-                .insert([{
-                    title: newAnnouncement.title,
-                    desc: newAnnouncement.desc,
-                    date: newAnnouncement.date
-                }])
-                .select();
-
-            if (retryError) throw retryError;
-            return res.status(201).json(retryData[0]);
-        }
-        res.status(201).json(data[0]);
-    } catch (err) {
-        console.error("Server Announcement Error:", err.message);
-        res.status(500).json({ error: err.message });
+    // 2. Try without 'date' (since the error mentioned 'date' column missing)
+    if (error && error.message.includes("'date'")) {
+        console.log("Retrying without 'date' column...");
+        const result = await supabase.from('announcements').insert([{
+            title, desc, created_at: now
+        }]).select();
+        data = result.data;
+        error = result.error;
     }
+
+    // 3. Try without 'created_at'
+    if (error && error.message.includes("'created_at'")) {
+        console.log("Retrying without 'created_at' column...");
+        const result = await supabase.from('announcements').insert([{
+            title, desc
+        }]).select();
+        data = result.data;
+        error = result.error;
+    }
+
+    // 4. Final attempt with 'content' instead of 'desc' just in case
+    if (error && error.message.includes("'desc'")) {
+        console.log("Retrying with 'content' instead of 'desc'...");
+        const result = await supabase.from('announcements').insert([{
+            title, content: desc
+        }]).select();
+        data = result.data;
+        error = result.error;
+    }
+
+    if (error) {
+        console.error("Final Announcement Insert Failure:", error.message);
+        return res.status(500).json({ 
+            error: error.message, 
+            details: "All schema fallback attempts failed." 
+        });
+    }
+
+    res.status(201).json(data ? data[0] : { title, desc });
 });
 
 export default app;
