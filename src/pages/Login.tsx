@@ -8,6 +8,7 @@ import BarangayLogo from "../assets/logo.png";
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -58,8 +59,22 @@ export default function Login() {
           <form onSubmit={handleLogin} className="space-y-4 md:space-y-6">
             <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 md:px-6 py-3 md:py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 focus:border-green-500 transition text-base md:text-lg" required />
-            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 md:px-6 py-3 md:py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 focus:border-green-500 transition text-base md:text-lg" required />
+            <div className="relative">
+              <input 
+                type={showPassword ? "text" : "password"} 
+                placeholder="Password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 md:px-6 py-3 md:py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 focus:border-green-500 transition text-base md:text-lg" required 
+              />
+              <button 
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-green-600 font-bold text-xs"
+              >
+                {showPassword ? "HIDE" : "SHOW"}
+              </button>
+            </div>
 
             {error && <p className="text-red-600 text-center font-medium text-base md:text-lg">{error}</p>}
 
