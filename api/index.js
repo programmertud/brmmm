@@ -15,86 +15,99 @@ const supabase = createClient(
     process.env.SUPABASE_KEY
 );
 
-// 🔍 Ping route to check if API and Database are alive
+// 🔍 Health Check
 app.get('/api/ping', async (req, res) => {
     try {
         const { data, error } = await supabase.from('users').select('count');
         if (error) throw error;
-        res.json({ 
-            status: "alive", 
-            database: "connected",
-            message: "Barangay API and Database are working!" 
-        });
+        res.json({ status: "alive", database: "connected" });
     } catch (err) {
-        res.status(500).json({ 
-            status: "alive", 
-            database: "error", 
-            error: err.message,
-            message: "API is alive but Database connection failed!" 
-        });
+        res.status(500).json({ status: "alive", database: "error", error: err.message });
     }
 });
 
 // Auth Routes
 app.post('/api/auth/login', async (req, res) => {
     const { username, password } = req.body;
-    
-    // Aggressively remove invisible characters and spaces
     const cleanUser = (username || "").replace(/[^\x20-\x7E]/g, "").trim().toLowerCase();
     const cleanPass = (password || "").replace(/[^\x20-\x7E]/g, "").trim();
 
-    console.log(`Login attempt for: [${cleanUser}] (length: ${cleanUser.length})`);
-    console.log(`Password length: ${cleanPass.length}`);
-
-    // 1. DIRECT FALLBACK
+    // 1. EMERGENCY FALLBACK
     if (cleanUser === "admin" && (cleanPass === "admin123" || cleanPass === "rizal12345")) {
         console.log("Emergency Admin login successful.");
         return res.json({ username: "admin", role: "admin" });
     }
     
-    // 2. Supabase Check (If fallback doesn't match)
+    // 2. Regular Login
     try {
-        const { data: user, error } = await supabase
-            .from('users')
-            .select('*')
-            .eq('username', lowerUser)
-            .single();
-
+        const { data: user, error } = await supabase.from('users').select('*').eq('username', cleanUser).single();
         if (user && user.password === cleanPass) {
              return res.json({ username: user.username, role: user.role });
         }
-    } catch (err) {
-        console.error("Supabase error:", err);
-    }
-
+    } catch (err) {}
     res.status(401).json({ message: "Invalid credentials" });
 });
 
-// Applications Routes
+// Applications Routes (With Mapping)
 app.get('/api/applications', async (req, res) => {
     const { data } = await supabase.from('applications').select('*').order('created_at', { ascending: false });
     res.json(data || []);
 });
 
 app.post('/api/applications', async (req, res) => {
-    const referenceId = "REF-" + Math.random().toString(36).substr(2, 9).toUpperCase();
-    const newApp = { ...req.body, reference_id: referenceId, status: "Pending", created_at: new Date().toISOString() };
-    const { data, error } = await supabase.from('applications').insert([newApp]).select().single();
-    if (error) return res.status(500).json({ error: error.message });
-    res.status(201).json(data);
+    try {
+        const referenceId = "REF-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+        const payload = req.body;
+        
+        const newApp = {
+            reference_id: referenceId,
+            first_name: payload.full_name || payload.fullName || "Resident",
+            last_name: "Application",
+            service_type: payload.certificate_type || payload.certificateType || "General",
+            status: "Pending",
+            created_at: new Date().toISOString(),
+            details: payload // Save EVERYTHING in JSONB just in case
+        };
+
+        const { data, error } = await supabase.from('applications').insert([newApp]).select().single();
+        if (error) {
+            console.error("Supabase Application Error:", error.message);
+            return res.status(500).json({ error: error.message });
+        }
+        res.status(201).json(data);
+    } catch (err) {
+        console.error("Server Application Error:", err.message);
+        res.status(500).json({ error: err.message });
+    }
 });
 
-// Complaints
+// Complaints (With Mapping)
 app.get('/api/complaints', async (req, res) => {
     const { data } = await supabase.from('complaints').select('*').order('created_at', { ascending: false });
     res.json(data || []);
 });
 
 app.post('/api/complaints', async (req, res) => {
-    const newComplaint = { ...req.body, created_at: new Date().toISOString() };
-    const { data, error } = await supabase.from('complaints').insert([newComplaint]).select().single();
-    if (error) return res.status(500).json({ error: error.message });
-    res.status(201).json(data);
+    try {
+        const payload = req.body;
+        const newComplaint = {
+            complainant: payload.name || payload.fullName || "Anonymous",
+            subject: payload.subject || "No Subject",
+            description: payload.message || payload.description || "No Content",
+            status: "Pending",
+            created_at: new Date().toISOString()
+        };
+
+        const { data, error } = await supabase.from('complaints').insert([newComplaint]).select().single();
+        if (error) {
+            console.error("Supabase Complaint Error:", error.message);
+            return res.status(500).json({ error: error.message });
+        }
+        res.status(201).json(data);
+    } catch (err) {
+        console.error("Server Complaint Error:", err.message);
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // Announcements
@@ -104,8 +117,7 @@ app.get('/api/announcements', async (req, res) => {
 });
 
 app.post('/api/announcements', async (req, res) => {
-    const newAnnouncement = { ...req.body, created_at: new Date().toISOString() };
-    const { data, error } = await supabase.from('announcements').insert([newAnnouncement]).select().single();
+    const { data, error } = await supabase.from('announcements').insert([{ ...req.body, created_at: new Date().toISOString() }]).select().single();
     if (error) return res.status(500).json({ error: error.message });
     res.status(201).json(data);
 });
