@@ -1,10 +1,17 @@
 /// <reference types="vite/client" />
 import axios from "axios";
 
+// Dynamically determine the API URL for maximum compatibility on mobile
+const getBaseURL = () => {
+  if (typeof window !== "undefined") {
+    // This ensures that on Vercel, it uses the full domain name
+    return `${window.location.origin}/api`;
+  }
+  return "/api";
+};
+
 const api = axios.create({
-  // Use relative path for Vercel deployment (handled by rewrites)
-  // Use explicit localhost for local development if needed
-  baseURL: import.meta.env.VITE_API_URL || "/api",
+  baseURL: getBaseURL(),
 });
 
 export default api;
