@@ -60,7 +60,12 @@ export default function AdminAnnouncements() {
       setBody("");
     } catch (err: any) {
       console.error("Announcement Creation Error:", err);
-      const serverMsg = err.response?.data?.error || err.response?.data?.message || err.message;
+      let serverMsg = "An unexpected error occurred.";
+      if (err.response && err.response.data) {
+        serverMsg = err.response.data.error || err.response.data.message || serverMsg;
+      } else if (err.message) {
+        serverMsg = err.message;
+      }
       setCreateError(`Error: ${serverMsg}`);
     } finally {
       setCreating(false);

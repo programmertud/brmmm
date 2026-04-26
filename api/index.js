@@ -158,4 +158,51 @@ app.post('/api/announcements', async (req, res) => {
     }
 });
 
+// --- Applications Actions ---
+app.patch('/api/applications/:id/status', async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    try {
+        const { data, error } = await supabase
+            .from('applications')
+            .update({ status })
+            .eq('id', id)
+            .select()
+            .single();
+        if (error) throw error;
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.delete('/api/applications/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const { error } = await supabase.from('applications').delete().eq('id', id);
+        if (error) throw error;
+        res.json({ message: "Deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// --- Complaints Actions ---
+app.patch('/api/complaints/:id', async (req, res) => {
+    const { id } = req.params;
+    const { status } = req.body;
+    try {
+        const { data, error } = await supabase
+            .from('complaints')
+            .update({ status })
+            .eq('id', id)
+            .select()
+            .single();
+        if (error) throw error;
+        res.json(data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 export default app;
