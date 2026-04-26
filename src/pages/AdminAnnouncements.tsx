@@ -58,9 +58,10 @@ export default function AdminAnnouncements() {
       setTitle("");
       setDate("");
       setBody("");
-    } catch (err) {
-      console.error(err);
-      setCreateError("Failed to create announcement.");
+    } catch (err: any) {
+      console.error("Announcement Creation Error:", err);
+      const serverMsg = err.response?.data?.error || err.response?.data?.message || err.message;
+      setCreateError(`Error: ${serverMsg}`);
     } finally {
       setCreating(false);
     }
