@@ -146,28 +146,28 @@ app.post(['/api/announcements', '/announcements'], async (req, res) => {
     try {
         const payload = req.body;
         const title = payload.title || "No Title";
-        const desc = payload.desc || payload.body || payload.content || payload.description || "No Content";
+        const contentStr = payload.description || payload.desc || payload.message || "No Content";
         const now = new Date().toISOString();
 
-        // 1. Primary Attempt (omitting 'date' column)
-        const { data, error } = await supabase
-            .from('announcements')
-            .insert([{ title, desc, created_at: now }])
-            .select();
+        console.log("Announcement Fallback Loop Start:", { title });
 
-        if (error) {
-            // 2. Fallback Attempt (minimal)
-            const { data: retryData, error: retryError } = await supabase
-                .from('announcements')
-                .insert([{ title, desc }])
-                .select();
+        // TRY 1: Try 'description'
+        const { data: d1, error: e1 } = await supabase.from('announcements').insert([{ title, description: contentStr, created_at: now }]).select();
+        if (!e1) return res.status(201).json(d1[0]);
 
-            if (retryError) throw retryError;
-            return res.status(201).json(retryData[0]);
-        }
-        res.status(201).json(data[0]);
+        // TRY 2: Try 'desc'
+        const { data: d2, error: e2 } = await supabase.from('announcements').insert([{ title, desc: contentStr, created_at: now }]).select();
+        if (!e2) return res.status(201).json(d2[0]);
+
+        // TRY 3: Try 'content'
+        const { data: d3, error: e3 } = await supabase.from('announcements').insert([{ title, content: contentStr, created_at: now }]).select();
+        if (!e3) return res.status(201).json(d3[0]);
+
+        // If ALL fail, throw the error
+        throw e1 || e2 || e3;
+
     } catch (err) {
-        console.error("Final Announcement Failure:", err.message);
+        console.error("Announcement Final Error:", err.message);
         res.status(500).json({ error: err.message });
     }
 });
