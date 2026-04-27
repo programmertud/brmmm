@@ -1,11 +1,10 @@
 /// <reference types="vite/client" />
 import axios from "axios";
 
-// Relative path is the absolute most reliable for Vercel + Mobile
-const getBaseURL = () => {
-  if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-  return "/api";
-};
+// Use /api for EVERYTHING. 
+// Locally: handled by vite.config.ts proxy
+// Production: handled by vercel.json rewrites
+const getBaseURL = () => "/api";
 
 const api = axios.create({
   baseURL: getBaseURL(),
