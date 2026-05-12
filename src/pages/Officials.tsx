@@ -16,8 +16,11 @@ import sk from "../assets/officials/sk.jpg";
 import placeholder from "../assets/officials/captain.jpg";
 
 import Navbar from "../components/Navbar";
+import { useLocation } from "react-router-dom";
 
 export default function Officials() {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith("/admin");
   const [selectedOfficial, setSelectedOfficial] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -59,7 +62,7 @@ export default function Officials() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans overflow-x-hidden">
-      <Navbar />
+      {!isAdmin && <Navbar />}
       <div className="space-y-8 md:space-y-10 p-4 md:p-6">
         {/* Header */}
         <div className="text-center pt-6 md:pt-10">

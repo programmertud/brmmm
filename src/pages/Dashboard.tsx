@@ -141,55 +141,54 @@ export default function Dashboard() {
       </h1>
 
       {/* Summary Cards - main stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
         {/* Total Residents */}
-        <div className="bg-white p-6 rounded-2xl shadow-xl border-l-8 border-blue-600 flex items-center gap-5 hover:shadow-2xl transition">
-          <FaUsers className="text-6xl text-blue-600" />
+        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl border-l-8 border-blue-600 flex items-center gap-4 md:gap-5 hover:shadow-2xl transition">
+          <FaUsers className="text-4xl md:text-6xl text-blue-600" />
           <div>
-            <p className="text-gray-600 font-medium">Total Residents</p>
-            <p className="text-4xl font-bold text-blue-700">{residentsData.total}</p>
+            <p className="text-xs md:text-sm text-gray-600 font-medium">Total Residents</p>
+            <p className="text-2xl md:text-4xl font-bold text-blue-700">{residentsData.total}</p>
           </div>
         </div>
 
         {/* Pending Requests - NEW */}
-        <div className="bg-white p-6 rounded-2xl shadow-xl border-l-8 border-orange-600 flex items-center gap-5 hover:shadow-2xl transition relative overflow-hidden">
-          <FaClipboardList className="text-6xl text-orange-600" />
+        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl border-l-8 border-orange-600 flex items-center gap-4 md:gap-5 hover:shadow-2xl transition relative overflow-hidden">
+          <FaClipboardList className="text-4xl md:text-6xl text-orange-600" />
           <div>
-            <p className="text-gray-600 font-medium">Pending Requests</p>
-            <p className="text-4xl font-bold text-orange-700">{pendingRequests}</p>
+            <p className="text-xs md:text-sm text-gray-600 font-medium">Pending Requests</p>
+            <p className="text-2xl md:text-4xl font-bold text-orange-700">{pendingRequests}</p>
             {pendingRequests > 0 && (
-              <div className="absolute top-2 right-2 animate-ping">
-                <FaExclamationCircle className="text-3xl text-red-600" />
+              <div className="absolute top-1 right-1 animate-ping">
+                <FaExclamationCircle className="text-xl md:text-3xl text-red-600" />
               </div>
             )}
           </div>
         </div>
 
         {/* Certificates This Month */}
-        <div className="bg-white p-6 rounded-2xl shadow-xl border-l-8 border-green-600 flex items-center gap-5 hover:shadow-2xl transition">
-          <FaFileAlt className="text-6xl text-green-600" />
+        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl border-l-8 border-green-600 flex items-center gap-4 md:gap-5 hover:shadow-2xl transition">
+          <FaFileAlt className="text-4xl md:text-6xl text-green-600" />
           <div>
-            <p className="text-gray-600 font-medium">Certificates This Month</p>
-            <p className="text-4xl font-bold text-green-700">{certificatesData.issuedThisMonth}</p>
+            <p className="text-xs md:text-sm text-gray-600 font-medium">Certificates (Month)</p>
+            <p className="text-2xl md:text-4xl font-bold text-green-700">{certificatesData.issuedThisMonth}</p>
           </div>
         </div>
 
         {/* Unresolved Blotter */}
-        <div className="bg-white p-6 rounded-2xl shadow-xl border-l-8 border-red-600 flex items-center gap-5 hover:shadow-2xl transition">
-          <FaBook className="text-6xl text-red-600" />
+        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl border-l-8 border-red-600 flex items-center gap-4 md:gap-5 hover:shadow-2xl transition">
+          <FaBook className="text-4xl md:text-6xl text-red-600" />
           <div>
-            <p className="text-gray-600 font-medium">Unresolved Blotter</p>
-            <p className="text-4xl font-bold text-red-700">{blotterData.unresolved}</p>
-            <p className="text-sm text-gray-500">of {blotterData.totalCases} cases</p>
+            <p className="text-xs md:text-sm text-gray-600 font-medium">Unresolved Blotter</p>
+            <p className="text-2xl md:text-4xl font-bold text-red-700">{blotterData.unresolved}</p>
           </div>
         </div>
 
         {/* Revenue */}
-        <div className="bg-white p-6 rounded-2xl shadow-xl border-l-8 border-yellow-500 flex items-center gap-5 hover:shadow-2xl transition">
-          <FaMoneyBill className="text-6xl text-yellow-500" />
+        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl border-l-8 border-yellow-500 flex items-center gap-4 md:gap-5 hover:shadow-2xl transition">
+          <FaMoneyBill className="text-4xl md:text-6xl text-yellow-500" />
           <div>
-            <p className="text-gray-600 font-medium">Revenue This Month</p>
-            <p className="text-4xl font-bold text-yellow-600">
+            <p className="text-xs md:text-sm text-gray-600 font-medium">Revenue (Month)</p>
+            <p className="text-2xl md:text-3xl font-bold text-yellow-600">
               ₱{monthlyRevenue.toLocaleString("en-PH")}
             </p>
           </div>
@@ -197,84 +196,88 @@ export default function Dashboard() {
       </div>
 
       {/* Secondary summary cards: Complaints & Announcements */}
-      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <div className="bg-white p-6 rounded-2xl shadow-xl border-l-8 border-red-500 flex items-center gap-5 hover:shadow-2xl transition">
-          <FaCommentDots className="text-6xl text-red-500" />
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
+        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl border-l-8 border-red-500 flex items-center gap-5 hover:shadow-2xl transition">
+          <FaCommentDots className="text-4xl md:text-6xl text-red-500" />
           <div>
-            <p className="text-gray-600 font-medium">Complaints</p>
-            <p className="text-4xl font-bold text-red-700">{complaintsCount}</p>
+            <p className="text-xs md:text-sm text-gray-600 font-medium">Total Complaints</p>
+            <p className="text-2xl md:text-4xl font-bold text-red-700">{complaintsCount}</p>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-xl border-l-8 border-blue-500 flex items-center gap-5 hover:shadow-2xl transition">
-          <FaBullhorn className="text-6xl text-blue-500" />
+        <div className="bg-white p-4 md:p-6 rounded-2xl shadow-xl border-l-8 border-blue-500 flex items-center gap-5 hover:shadow-2xl transition">
+          <FaBullhorn className="text-4xl md:text-6xl text-blue-500" />
           <div>
-            <p className="text-gray-600 font-medium">Announcements</p>
-            <p className="text-4xl font-bold text-blue-700">{announcementsCount}</p>
+            <p className="text-xs md:text-sm text-gray-600 font-medium">Total Announcements</p>
+            <p className="text-2xl md:text-4xl font-bold text-blue-700">{announcementsCount}</p>
           </div>
         </div>
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="bg-white p-8 rounded-2xl shadow-xl">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Population Demographics</h2>
-          <ResponsiveContainer width="100%" height={320}>
-            <PieChart>
-              <Pie
-                data={demographicData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={110}
-                label={({ name, value }) => `${name}: ${value}`}
-              >
-                {demographicData.map((_, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 md:gap-8">
+        <div className="bg-white p-4 md:p-8 rounded-2xl shadow-xl">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-6 text-center">Population Demographics</h2>
+          <div className="h-[250px] md:h-[320px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={demographicData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  outerRadius="80%"
+                  label={({ name, value }) => `${name}: ${value}`}
+                >
+                  {demographicData.map((_, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
-        <div className="bg-white p-8 rounded-2xl shadow-xl lg:col-span-2">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Revenue Trend (Last 4 Months)</h2>
-          <ResponsiveContainer width="100%" height={320}>
-            <LineChart data={revenueChartData}>
-              <CartesianGrid strokeDasharray="5 5" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip formatter={(value: number) => `₱${value.toLocaleString("en-PH")}`} />
-              <Line type="monotone" dataKey="amount" stroke="#f59e0b" strokeWidth={5} dot={{ fill: "#f59e0b", r: 8 }} />
-            </LineChart>
-          </ResponsiveContainer>
+        <div className="bg-white p-4 md:p-8 rounded-2xl shadow-xl xl:col-span-2">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-6 text-center">Revenue Trend (Last 4 Months)</h2>
+          <div className="h-[250px] md:h-[320px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={revenueChartData}>
+                <CartesianGrid strokeDasharray="5 5" />
+                <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                <YAxis tick={{ fontSize: 12 }} />
+                <Tooltip formatter={(value: number) => `₱${value.toLocaleString("en-PH")}`} />
+                <Line type="monotone" dataKey="amount" stroke="#f59e0b" strokeWidth={5} dot={{ fill: "#f59e0b", r: 8 }} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
       {/* QUICK ACTIONS - Now with Requests */}
       <div className="mt-12">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-10">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-8 md:mb-10 uppercase tracking-widest">Quick Actions</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 md:gap-6">
           {/* Residents */}
           <Link
             to="/admin/residents"
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-3xl p-10 flex flex-col items-center justify-center shadow-2xl transform hover:-translate-y-3 transition-all duration-300"
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-2xl md:rounded-3xl p-6 md:p-10 flex flex-col items-center justify-center shadow-xl transition transform active:scale-95"
           >
-            <FaUsers className="text-6xl mb-4" />
-            <span className="text-xl font-bold text-center">Manage Residents</span>
+            <FaUsers className="text-3xl md:text-6xl mb-3 md:mb-4" />
+            <span className="text-sm md:text-xl font-bold text-center">Residents</span>
           </Link>
 
           {/* Requests - NEW */}
           <Link
             to="/admin/requests"
-            className="bg-orange-600 hover:bg-orange-700 text-white rounded-3xl p-10 flex flex-col items-center justify-center shadow-2xl transform hover:-translate-y-3 transition-all duration-300 relative overflow-hidden"
+            className="bg-orange-600 hover:bg-orange-700 text-white rounded-2xl md:rounded-3xl p-6 md:p-10 flex flex-col items-center justify-center shadow-xl transition transform active:scale-95 relative"
           >
-            <FaClipboardList className="text-6xl mb-4" />
-            <span className="text-xl font-bold text-center">Resident Requests</span>
+            <FaClipboardList className="text-3xl md:text-6xl mb-3 md:mb-4" />
+            <span className="text-sm md:text-xl font-bold text-center">Requests</span>
             {pendingRequests > 0 && (
-              <div className="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-12 h-12 flex items-center justify-center font-bold text-lg animate-pulse">
+              <div className="absolute top-2 right-2 bg-red-600 text-white rounded-full w-6 h-6 md:w-10 md:h-10 flex items-center justify-center font-black text-xs md:text-lg animate-pulse">
                 {pendingRequests}
               </div>
             )}
@@ -283,46 +286,46 @@ export default function Dashboard() {
           {/* Certificates */}
           <Link
             to="/admin/certificates"
-            className="bg-green-600 hover:bg-green-700 text-white rounded-3xl p-10 flex flex-col items-center justify-center shadow-2xl transform hover:-translate-y-3 transition-all duration-300"
+            className="bg-green-600 hover:bg-green-700 text-white rounded-2xl md:rounded-3xl p-6 md:p-10 flex flex-col items-center justify-center shadow-xl transition transform active:scale-95"
           >
-            <FaFileAlt className="text-6xl mb-4" />
-            <span className="text-xl font-bold text-center">Issue Certificate</span>
+            <FaFileAlt className="text-3xl md:text-6xl mb-3 md:mb-4" />
+            <span className="text-sm md:text-xl font-bold text-center">Certificates</span>
           </Link>
 
           {/* Blotter */}
           <Link
             to="/admin/blotter"
-            className="bg-red-600 hover:bg-red-700 text-white rounded-3xl p-10 flex flex-col items-center justify-center shadow-2xl transform hover:-translate-y-3 transition-all duration-300"
+            className="bg-red-600 hover:bg-red-700 text-white rounded-2xl md:rounded-3xl p-6 md:p-10 flex flex-col items-center justify-center shadow-xl transition transform active:scale-95"
           >
-            <FaBook className="text-6xl mb-4" />
-            <span className="text-xl font-bold text-center">Blotter Records</span>
+            <FaBook className="text-3xl md:text-6xl mb-3 md:mb-4" />
+            <span className="text-sm md:text-xl font-bold text-center">Blotter</span>
           </Link>
 
           {/* Complaints */}
           <Link
             to="/admin/complaints"
-            className="bg-rose-600 hover:bg-rose-700 text-white rounded-3xl p-10 flex flex-col items-center justify-center shadow-2xl transform hover:-translate-y-3 transition-all duration-300"
+            className="bg-rose-600 hover:bg-rose-700 text-white rounded-2xl md:rounded-3xl p-6 md:p-10 flex flex-col items-center justify-center shadow-xl transition transform active:scale-95"
           >
-            <FaCommentDots className="text-6xl mb-4" />
-            <span className="text-xl font-bold text-center">View Complaints</span>
+            <FaCommentDots className="text-3xl md:text-6xl mb-3 md:mb-4" />
+            <span className="text-sm md:text-xl font-bold text-center">Complaints</span>
           </Link>
 
           {/* Announcements */}
           <Link
             to="/admin/announcements"
-            className="bg-sky-600 hover:bg-sky-700 text-white rounded-3xl p-10 flex flex-col items-center justify-center shadow-2xl transform hover:-translate-y-3 transition-all duration-300"
+            className="bg-sky-600 hover:bg-sky-700 text-white rounded-2xl md:rounded-3xl p-6 md:p-10 flex flex-col items-center justify-center shadow-xl transition transform active:scale-95"
           >
-            <FaBullhorn className="text-6xl mb-4" />
-            <span className="text-xl font-bold text-center">View Announcements</span>
+            <FaBullhorn className="text-3xl md:text-6xl mb-3 md:mb-4" />
+            <span className="text-sm md:text-xl font-bold text-center">Updates</span>
           </Link>
-
+          
           {/* Officials */}
           <Link
             to="/admin/officials"
-            className="bg-purple-600 hover:bg-purple-700 text-white rounded-3xl p-10 flex flex-col items-center justify-center shadow-2xl transform hover:-translate-y-3 transition-all duration-300"
+            className="bg-purple-600 hover:bg-purple-700 text-white rounded-2xl md:rounded-3xl p-6 md:p-10 flex flex-col items-center justify-center shadow-xl transition transform active:scale-95"
           >
-            <FaUserTie className="text-6xl mb-4" />
-            <span className="text-xl font-bold text-center">Barangay Officials</span>
+            <FaUserTie className="text-3xl md:text-6xl mb-3 md:mb-4" />
+            <span className="text-sm md:text-xl font-bold text-center">Officials</span>
           </Link>
 
           {/* Settings */}

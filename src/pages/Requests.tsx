@@ -54,23 +54,23 @@ export default function Requests() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="bg-white rounded-2xl shadow-xl p-8">
-        <h1 className="text-4xl font-bold text-green-800 mb-2">Resident Requests</h1>
+      <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 text-center md:text-left">
+        <h1 className="text-3xl md:text-4xl font-bold text-green-800 mb-2">Resident Requests</h1>
         <p className="text-gray-600">Review, approve, or delete certificate applications</p>
       </div>
 
       {/* Filter Buttons with Count */}
-      <div className="flex gap-4 flex-wrap">
-        <button onClick={() => setFilter("all")} className={`px-6 py-3 rounded-xl font-bold transition ${filter === "all" ? "bg-green-700 text-white" : "bg-gray-200 hover:bg-gray-300"}`}>
+      <div className="flex gap-2 md:gap-4 flex-wrap justify-center md:justify-start">
+        <button onClick={() => setFilter("all")} className={`px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold text-sm md:text-base transition ${filter === "all" ? "bg-green-700 text-white" : "bg-gray-200 hover:bg-gray-300"}`}>
           All ({requests.length})
         </button>
-        <button onClick={() => setFilter("Pending")} className={`px-6 py-3 rounded-xl font-bold transition ${filter === "Pending" ? "bg-orange-600 text-white" : "bg-gray-200 hover:bg-gray-300"}`}>
+        <button onClick={() => setFilter("Pending")} className={`px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold text-sm md:text-base transition ${filter === "Pending" ? "bg-orange-600 text-white" : "bg-gray-200 hover:bg-gray-300"}`}>
           Pending ({requests.filter(r => r.status === "Pending").length})
         </button>
-        <button onClick={() => setFilter("Approved")} className={`px-6 py-3 rounded-xl font-bold transition ${filter === "Approved" ? "bg-green-600 text-white" : "bg-gray-200 hover:bg-gray-300"}`}>
+        <button onClick={() => setFilter("Approved")} className={`px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold text-sm md:text-base transition ${filter === "Approved" ? "bg-green-600 text-white" : "bg-gray-200 hover:bg-gray-300"}`}>
           Approved ({requests.filter(r => r.status === "Approved").length})
         </button>
-        <button onClick={() => setFilter("Rejected")} className={`px-6 py-3 rounded-xl font-bold transition ${filter === "Rejected" ? "bg-red-600 text-white" : "bg-gray-200 hover:bg-gray-300"}`}>
+        <button onClick={() => setFilter("Rejected")} className={`px-4 py-2 md:px-6 md:py-3 rounded-xl font-bold text-sm md:text-base transition ${filter === "Rejected" ? "bg-red-600 text-white" : "bg-gray-200 hover:bg-gray-300"}`}>
           Rejected ({requests.filter(r => r.status === "Rejected").length})
         </button>
       </div>
@@ -78,7 +78,8 @@ export default function Requests() {
       {/* Table - Responsive Scroll Container */}
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1000px]">
+          {/* Desktop Table View */}
+          <table className="w-full min-w-[1000px] hidden md:table">
             <thead className="bg-gradient-to-r from-green-700 to-green-800 text-white">
               <tr>
                 <th className="p-4 text-left">Ref ID</th>
@@ -162,6 +163,52 @@ export default function Requests() {
               )}
             </tbody>
           </table>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden divide-y divide-gray-200">
+            {filtered.length === 0 ? (
+              <p className="text-center py-10 text-gray-500">No requests found</p>
+            ) : (
+              filtered.map((req) => (
+                <div key={req.id} className="p-5 space-y-4 bg-white hover:bg-gray-50 transition">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-[10px] font-black text-green-700 uppercase tracking-tighter mb-1">{req.reference_id || req.id}</p>
+                      <h3 className="font-bold text-gray-900 text-lg">{req.first_name}</h3>
+                      <p className="text-xs text-gray-500">{new Date(req.created_at).toLocaleDateString()}</p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full font-black text-[10px] uppercase
+                      ${req.status === "Approved" ? "bg-green-100 text-green-800" :
+                        req.status === "Rejected" ? "bg-red-100 text-red-800" :
+                        "bg-orange-100 text-orange-800"}`}>
+                      {req.status}
+                    </span>
+                  </div>
+
+                  <div className="bg-gray-50 p-3 rounded-xl">
+                    <p className="text-xs font-bold text-gray-400 uppercase mb-1">{req.service_type}</p>
+                    <p className="text-sm text-gray-700 italic line-clamp-2">"{req.details?.purpose || "Not specified"}"</p>
+                  </div>
+
+                  <div className="flex gap-2 pt-2">
+                    {req.status === "Pending" && (
+                      <>
+                        <button onClick={() => updateStatus(req.id, "Approved")} className="flex-1 bg-green-600 text-white py-3 rounded-xl flex items-center justify-center shadow-lg"><FaCheck /></button>
+                        <button onClick={() => updateStatus(req.id, "Rejected")} className="flex-1 bg-red-600 text-white py-3 rounded-xl flex items-center justify-center shadow-lg"><FaTimes /></button>
+                      </>
+                    )}
+                    <button onClick={() => setSelectedRequest(req)} className="flex-1 bg-blue-600 text-white py-3 rounded-xl flex items-center justify-center shadow-lg"><FaEye /></button>
+                    {req.status === "Approved" && (
+                      <button className="flex-1 bg-green-100 text-green-700 py-3 rounded-xl flex items-center justify-center shadow-lg"><FaPrint /></button>
+                    )}
+                    {(req.status === "Approved" || req.status === "Rejected") && (
+                      <button onClick={() => setDeleteConfirm(req.id)} className="flex-1 bg-red-100 text-red-600 py-3 rounded-xl flex items-center justify-center shadow-lg"><FaTrashAlt /></button>
+                    )}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </div>
       </div>
 

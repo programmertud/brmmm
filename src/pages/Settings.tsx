@@ -212,244 +212,239 @@ export default function Settings() {
      UI RENDER
   --------------------------------*/
   return (
-    <div className="max-w-5xl mx-auto mt-4 md:mt-6 bg-white dark:bg-gray-800 p-4 md:p-8 rounded-xl shadow-md">
-
-      <h1 className="text-2xl md:text-3xl font-bold mb-6">⚙ Settings</h1>
-
-      {/* -----------------------------------------------------
-           SECTION: BARANGAY INFORMATION
-      ------------------------------------------------------ */}
-      {/* -----------------------------------------------------
-           SECTION: BARANGAY INFORMATION
-      ------------------------------------------------------ */}
-      <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4">Barangay Information</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-          {/* Logo */}
-          <div className="md:col-span-2 flex flex-col sm:flex-row items-center gap-4 bg-gray-50 p-4 rounded-xl">
-            <div className="w-24 h-24 border-4 border-yellow-400 rounded-full overflow-hidden shadow-lg flex-shrink-0">
-               {settings.barangayLogo ? (
-                 <img src={settings.barangayLogo} className="w-full h-full object-cover" />
-               ) : (
-                 <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-400">No Logo</div>
-               )}
-            </div>
-            <div className="flex-1 text-center sm:text-left">
-              <label className="block font-bold text-gray-700 mb-2">Upload Barangay Logo</label>
-              <input 
-                type="file" 
-                accept="image/*" 
-                onChange={(e) => handleFileUpload(e, "barangayLogo")} 
-                className="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-              />
-            </div>
-          </div>
-
-          {/* Barangay Name */}
+    <div className="max-w-5xl mx-auto px-4 py-6 md:py-10">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+        
+        {/* Header */}
+        <div className="p-6 md:p-8 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <label className="font-medium block mb-1">Barangay Name</label>
-            <input
-              name="barangayName"
-              type="text"
-              value={settings.barangayName}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 transition"
-            />
+            <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
+            <p className="text-gray-500 text-sm">System configuration and account management</p>
           </div>
-
-          {/* Address */}
-          <div>
-            <label className="font-medium block mb-1">Address</label>
-            <input
-              name="address"
-              type="text"
-              value={settings.address}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 transition"
-            />
-          </div>
-
-          {/* Contact */}
-          <div>
-            <label className="font-medium block mb-1">Contact Number</label>
-            <input
-              name="contactNumber"
-              type="text"
-              value={settings.contactNumber}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 transition"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* -----------------------------------------------------
-           SECTION: BARANGAY OFFICIALS
-      ------------------------------------------------------ */}
-      {/* -----------------------------------------------------
-           SECTION: BARANGAY OFFICIALS
-      ------------------------------------------------------ */}
-      <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4 text-green-800">Barangay Officials</h2>
-
-        <div className="flex flex-col sm:flex-row gap-4 mb-6">
-          <input
-            type="text"
-            placeholder="Official Name"
-            className="flex-1 border p-3 rounded-xl shadow-sm focus:ring-2 focus:ring-green-500 outline-none"
-            value={newOfficial.name}
-            onChange={(e) => setNewOfficial({ ...newOfficial, name: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Position (e.g. Captain)"
-            className="flex-1 border p-3 rounded-xl shadow-sm focus:ring-2 focus:ring-green-500 outline-none"
-            value={newOfficial.position}
-            onChange={(e) => setNewOfficial({ ...newOfficial, position: e.target.value })}
-          />
-          <button onClick={addOfficial} className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg transition">
-            Add Official
+          <button
+            onClick={handleSave}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-bold transition shadow-sm"
+          >
+            Save All Changes
           </button>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border shadow-sm border-gray-200">
-          <table className="w-full border-collapse min-w-[500px]">
-            <thead className="bg-green-50 dark:bg-gray-700">
-              <tr>
-                <th className="p-4 border text-left text-green-800 font-bold">Name</th>
-                <th className="p-4 border text-left text-green-800 font-bold">Position</th>
-                <th className="p-4 border text-center text-green-800 font-bold">Action</th>
-              </tr>
-            </thead>
-
-            <tbody className="bg-white">
-              {officials.length > 0 ? officials.map((o) => (
-                <tr key={o.id} className="hover:bg-gray-50 transition text-sm md:text-base">
-                  <td className="p-4 border">{o.name}</td>
-                  <td className="p-4 border font-medium text-gray-700">{o.position}</td>
-                  <td className="p-4 border text-center">
-                    <button
-                      onClick={() => removeOfficial(o.id)}
-                      className="text-red-500 hover:text-red-700 font-bold"
-                    >
-                      Remove
-                    </button>
-                  </td>
-                </tr>
-              )) : (
-                <tr>
-                  <td colSpan={3} className="p-8 text-center text-gray-400 italic">No officials added yet.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* -----------------------------------------------------
-           SECTION: CERTIFICATE TEMPLATE
-      ------------------------------------------------------ */}
-      <section className="mb-12">
-        <h2 className="text-xl font-semibold mb-4 text-blue-800">Certificate Template</h2>
-
-        <textarea
-          name="certificateTemplate"
-          value={settings.certificateTemplate}
-          onChange={handleChange}
-          className="w-full h-40 border p-4 rounded-2xl shadow-sm focus:ring-2 focus:ring-blue-500 outline-none transition"
-          placeholder="Enter the default template text for certificates..."
-        ></textarea>
-
-        <p className="text-sm mt-3 text-gray-500 flex flex-wrap items-center gap-2">
-          <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-mono text-xs">{"{{name}}"}</span>
-          <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-mono text-xs">{"{{purpose}}"}</span>
-          <span>Use these tags to auto-fill details.</span>
-        </p>
-      </section>
-
-      {/* -----------------------------------------------------
-           SECTION: BACKUP & RESTORE
-      ------------------------------------------------------ */}
-      <section className="mb-12 bg-slate-50 p-4 md:p-6 rounded-2xl border-2 border-slate-100">
-        <h2 className="text-xl font-semibold mb-4 text-slate-800">System Management</h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <button onClick={backupData} className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-4 rounded-xl font-bold shadow-lg transition flex items-center justify-center gap-2">
-            Backup System
-          </button>
-
-          <label className="bg-amber-500 hover:bg-amber-600 text-white px-4 py-4 rounded-xl font-bold shadow-lg transition cursor-pointer flex items-center justify-center gap-2 text-center">
-            Restore System
-            <input type="file" hidden onChange={restoreData} />
-          </label>
-
-          <button onClick={resetSystem} className="bg-rose-600 hover:bg-rose-700 text-white px-4 py-4 rounded-xl font-bold shadow-lg transition flex items-center justify-center gap-2">
-            Reset Data
-          </button>
-        </div>
-      </section>
-
-      {/* -----------------------------------------------------
-           SECTION: ACCOUNT SECURITY (NEW)
-      ------------------------------------------------------ */}
-      <section className="mb-12 border-t pt-8">
-        <h2 className="text-xl font-semibold mb-4 text-red-700">Account Security</h2>
-        <div className="bg-red-50 p-6 rounded-2xl border-2 border-red-100 max-w-md">
-          <p className="text-sm text-red-600 mb-4">Change your administrative password</p>
+        <div className="p-6 md:p-8 space-y-10">
           
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Old Password</label>
-              <input
-                type="password"
-                className="w-full p-3 border rounded-xl"
-                value={passwordForm.oldPassword}
-                onChange={(e) => setPasswordForm({ ...passwordForm, oldPassword: e.target.value })}
-              />
+          {/* Section: Barangay Profile */}
+          <section>
+            <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+              <span className="w-1.5 h-6 bg-blue-600 rounded-full"></span>
+              Barangay Profile
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="flex flex-col items-center p-6 bg-gray-50 rounded-2xl border border-gray-100">
+                <div className="w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden bg-white mb-4">
+                  {settings.barangayLogo ? (
+                    <img src={settings.barangayLogo} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs text-center font-bold">No Logo</div>
+                  )}
+                </div>
+                <label className="text-blue-600 hover:text-blue-700 text-sm font-bold cursor-pointer">
+                  Change Logo
+                  <input type="file" accept="image/*" hidden onChange={(e) => handleFileUpload(e, "barangayLogo")} />
+                </label>
+              </div>
+
+              <div className="md:col-span-2 space-y-4">
+                <div>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Barangay Name</label>
+                  <input
+                    name="barangayName"
+                    type="text"
+                    value={settings.barangayName}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Contact Number</label>
+                  <input
+                    name="contactNumber"
+                    type="text"
+                    value={settings.contactNumber}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Office Address</label>
+                  <input
+                    name="address"
+                    type="text"
+                    value={settings.address}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition"
+                  />
+                </div>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-              <input
-                type="password"
-                className="w-full p-3 border rounded-xl"
-                value={passwordForm.newPassword}
-                onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-              <input
-                type="password"
-                className="w-full p-3 border rounded-xl"
-                value={passwordForm.confirmPassword}
-                onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
-              />
-            </div>
+          </section>
+
+          <hr className="border-gray-100" />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
             
-            {passwordStatus && (
-              <p className={`text-sm font-bold ${passwordStatus.includes("success") ? "text-green-600" : "text-red-600"}`}>
-                {passwordStatus}
-              </p>
-            )}
+            {/* Section: Issuance Logic */}
+            <section>
+              <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <span className="w-1.5 h-6 bg-purple-600 rounded-full"></span>
+                Certificate Settings
+              </h2>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">ID Prefix</label>
+                    <input
+                      name="certificatePrefix"
+                      type="text"
+                      value={settings.certificatePrefix}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition uppercase"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Start Number</label>
+                    <input
+                      name="startingNumber"
+                      type="number"
+                      value={settings.startingNumber}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1 block">Default Template Text</label>
+                  <textarea
+                    name="certificateTemplate"
+                    value={settings.certificateTemplate}
+                    onChange={handleChange}
+                    rows={4}
+                    className="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-purple-500 outline-none transition resize-none text-sm"
+                  />
+                  <p className="text-[10px] text-gray-400 mt-1">Use {"{{name}}"} and {"{{purpose}}"} for auto-fill.</p>
+                </div>
+              </div>
+            </section>
 
-            <button
-              onClick={handleChangePassword}
-              className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl font-bold transition shadow-lg"
-            >
-              Update Password
-            </button>
+            {/* Section: Officials */}
+            <section>
+              <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <span className="w-1.5 h-6 bg-green-600 rounded-full"></span>
+                Barangay Officials
+              </h2>
+              <div className="border rounded-xl overflow-hidden">
+                <div className="p-4 bg-gray-50 border-b space-y-2">
+                  <input
+                    type="text"
+                    placeholder="Full Name"
+                    className="w-full px-3 py-2 text-sm border rounded-lg"
+                    value={newOfficial.name}
+                    onChange={(e) => setNewOfficial({ ...newOfficial, name: e.target.value })}
+                  />
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Position"
+                      className="flex-1 px-3 py-2 text-sm border rounded-lg"
+                      value={newOfficial.position}
+                      onChange={(e) => setNewOfficial({ ...newOfficial, position: e.target.value })}
+                    />
+                    <button onClick={addOfficial} className="bg-green-600 text-white px-4 rounded-lg text-sm font-bold">Add</button>
+                  </div>
+                </div>
+                <div className="max-h-40 overflow-y-auto divide-y">
+                  {officials.length > 0 ? officials.map(o => (
+                    <div key={o.id} className="p-3 flex justify-between items-center bg-white text-sm">
+                      <div>
+                        <p className="font-bold">{o.name}</p>
+                        <p className="text-xs text-gray-500">{o.position}</p>
+                      </div>
+                      <button onClick={() => removeOfficial(o.id)} className="text-red-500 hover:text-red-700">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                      </button>
+                    </div>
+                  )) : (
+                    <p className="p-4 text-center text-gray-400 text-xs italic">No officials added.</p>
+                  )}
+                </div>
+              </div>
+            </section>
+
           </div>
-        </div>
-      </section>
 
-      <button
-        onClick={handleSave}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-xl font-bold text-lg shadow-xl transition transform hover:scale-[1.02]"
-      >
-        Save All Settings
-      </button>
+          <hr className="border-gray-100" />
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            {/* Section: Security */}
+            <section>
+              <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <span className="w-1.5 h-6 bg-red-600 rounded-full"></span>
+                Security
+              </h2>
+              <div className="space-y-4 max-w-sm">
+                <input
+                  type="password"
+                  placeholder="Old Password"
+                  className="w-full px-4 py-2.5 border rounded-lg text-sm"
+                  value={passwordForm.oldPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, oldPassword: e.target.value })}
+                />
+                <input
+                  type="password"
+                  placeholder="New Password"
+                  className="w-full px-4 py-2.5 border rounded-lg text-sm"
+                  value={passwordForm.newPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                />
+                <input
+                  type="password"
+                  placeholder="Confirm New Password"
+                  className="w-full px-4 py-2.5 border rounded-lg text-sm"
+                  value={passwordForm.confirmPassword}
+                  onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                />
+                {passwordStatus && <p className={`text-xs font-bold ${passwordStatus.includes("success") ? "text-green-600" : "text-red-600"}`}>{passwordStatus}</p>}
+                <button
+                  onClick={handleChangePassword}
+                  className="w-full bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-lg font-bold text-sm transition shadow-sm"
+                >
+                  Update Password
+                </button>
+              </div>
+            </section>
+
+            {/* Section: System */}
+            <section>
+              <h2 className="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <span className="w-1.5 h-6 bg-gray-600 rounded-full"></span>
+                System
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <button onClick={backupData} className="bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-lg font-bold text-sm shadow-sm transition">
+                  Export Backup
+                </button>
+                <label className="bg-amber-500 hover:bg-amber-600 text-white py-2.5 rounded-lg font-bold text-sm shadow-sm transition text-center cursor-pointer">
+                  Import Backup
+                  <input type="file" hidden onChange={restoreData} />
+                </label>
+                <button onClick={resetSystem} className="bg-gray-200 hover:bg-gray-300 text-gray-700 py-2.5 rounded-lg font-bold text-sm shadow-sm transition sm:col-span-2">
+                  Factory Reset
+                </button>
+              </div>
+            </section>
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 }

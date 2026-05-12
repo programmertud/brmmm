@@ -115,7 +115,7 @@ export default function ResidentsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto mt-4 md:mt-6 bg-white p-4 md:p-8 rounded-2xl shadow-2xl">
+    <div className="max-w-7xl mx-auto mt-0 md:mt-6 bg-white p-4 md:p-8 rounded-none md:rounded-2xl shadow-2xl min-h-screen md:min-h-0">
       <h1 className="text-2xl md:text-4xl font-bold mb-6 md:mb-10 text-center text-green-800 uppercase tracking-tight">
         Residents Management
       </h1>
@@ -127,7 +127,7 @@ export default function ResidentsPage() {
         </div>
       )}
 
-      {/* Form */}
+      {/* Form Section */}
       <div className="bg-gray-50 p-4 md:p-8 rounded-2xl shadow-inner mb-10">
         <form onSubmit={handleSubmit} className="space-y-6 md:space-y-8">
           {/* PHOTO UPLOAD */}
@@ -137,19 +137,19 @@ export default function ResidentsPage() {
                 <img
                   src={photoPreview}
                   alt="Resident"
-                  className="w-32 h-32 md:w-48 md:h-48 rounded-full object-cover border-4 md:border-8 border-green-700 shadow-2xl"
+                  className="w-28 h-28 md:w-48 md:h-48 rounded-full object-cover border-4 md:border-8 border-green-700 shadow-2xl"
                 />
               ) : (
-                <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-gray-200 border-4 md:border-8 border-dashed border-green-700 flex items-center justify-center">
-                  <FaUserCircle className="text-7xl md:text-9xl text-gray-400" />
+                <div className="w-28 h-28 md:w-48 md:h-48 rounded-full bg-gray-200 border-4 md:border-8 border-dashed border-green-700 flex items-center justify-center">
+                  <FaUserCircle className="text-6xl md:text-9xl text-gray-400" />
                 </div>
               )}
 
               <label
                 htmlFor="photo-upload"
-                className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-full opacity-0 group-hover:opacity-100 transition cursor-pointer"
+                className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-60 rounded-full opacity-0 md:group-hover:opacity-100 transition cursor-pointer"
               >
-                <FaCamera className="text-5xl text-white" />
+                <FaCamera className="text-3xl md:text-5xl text-white" />
               </label>
               <input
                 id="photo-upload"
@@ -161,19 +161,19 @@ export default function ResidentsPage() {
             </div>
           </div>
 
-          <p className="text-center text-gray-600 font-medium -mt-4">
+          <p className="text-center text-gray-600 font-medium -mt-4 text-sm md:text-base">
             Click to {photoPreview ? "change" : "upload"} photo
           </p>
 
           {/* Form Fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <input
               type="text"
               name="firstName"
               value={form.firstName}
               onChange={handleChange}
               placeholder="First Name *"
-              className="px-6 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 focus:border-green-500 transition text-lg"
+              className="px-4 py-3 md:px-6 md:py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 transition text-base md:text-lg"
               required
             />
             <input
@@ -182,7 +182,7 @@ export default function ResidentsPage() {
               value={form.lastName}
               onChange={handleChange}
               placeholder="Last Name *"
-              className="px-6 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 focus:border-green-500 transition text-lg"
+              className="px-4 py-3 md:px-6 md:py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 transition text-base md:text-lg"
               required
             />
             <input
@@ -193,14 +193,14 @@ export default function ResidentsPage() {
               placeholder="Age *"
               min="1"
               max="120"
-              className="px-6 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 focus:border-green-500 transition text-lg"
+              className="px-4 py-3 md:px-6 md:py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 transition text-base md:text-lg"
               required
             />
             <select
               name="gender"
               value={form.gender}
               onChange={handleChange}
-              className="px-6 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 focus:border-green-500 transition text-lg"
+              className="px-4 py-3 md:px-6 md:py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 transition text-base md:text-lg"
               required
             >
               <option value="">Select Gender *</option>
@@ -214,7 +214,7 @@ export default function ResidentsPage() {
               value={form.address}
               onChange={handleChange}
               placeholder="Full Address *"
-              className="px-6 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 focus:border-green-500 transition text-lg md:col-span-2"
+              className="px-4 py-3 md:px-6 md:py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 transition text-base md:text-lg md:col-span-2"
               required
             />
             <input
@@ -222,16 +222,16 @@ export default function ResidentsPage() {
               name="contact"
               value={form.contact}
               onChange={handleChange}
-              placeholder="Contact Number * (e.g. 09123456789)"
-              className="px-6 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 focus:border-green-500 transition text-lg md:col-span-2"
+              placeholder="Contact Number *"
+              className="px-4 py-3 md:px-6 md:py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-green-500 transition text-base md:text-lg md:col-span-2"
               required
             />
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <button
               type="submit"
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white py-5 rounded-xl font-bold text-xl shadow-xl transition transform hover:scale-105"
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white py-4 md:py-5 rounded-xl font-bold text-lg md:text-xl shadow-xl transition transform active:scale-95"
             >
               {editingIndex !== null ? "Update" : "Add"} Resident
             </button>
@@ -239,7 +239,7 @@ export default function ResidentsPage() {
               <button
                 type="button"
                 onClick={handleCancel}
-                className="px-8 py-5 bg-gray-600 hover:bg-gray-700 text-white rounded-xl font-bold transition"
+                className="px-8 py-4 md:py-5 bg-gray-600 hover:bg-gray-700 text-white rounded-xl font-bold transition"
               >
                 Cancel
               </button>
@@ -248,77 +248,102 @@ export default function ResidentsPage() {
         </form>
       </div>
 
-      {/* Residents Table */}
-      <div className="overflow-x-auto rounded-xl shadow-lg border border-gray-200">
-        <table className="w-full min-w-[900px] border-collapse text-sm">
-          <thead className="bg-green-700 text-white">
-            <tr>
-              <th className="px-6 py-5 text-left">Photo</th>
-              <th className="px-6 py-5 text-left">Full Name</th>
-              <th className="px-6 py-5 text-center">Age</th>
-              <th className="px-6 py-5 text-center">Gender</th>
-              <th className="px-6 py-5">Address</th>
-              <th className="px-6 py-5">Contact</th>
-              <th className="px-6 py-5 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {residents.length === 0 ? (
+      {/* Residents List */}
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full min-w-[900px] border-collapse text-sm">
+            <thead className="bg-green-700 text-white">
               <tr>
-                <td colSpan={7} className="text-center py-16 text-gray-500 text-lg">
-                  No residents added yet. Start adding now!
-                </td>
+                <th className="px-6 py-5 text-left">Photo</th>
+                <th className="px-6 py-5 text-left">Full Name</th>
+                <th className="px-6 py-5 text-center">Age</th>
+                <th className="px-6 py-5 text-center">Gender</th>
+                <th className="px-6 py-5">Address</th>
+                <th className="px-6 py-5">Contact</th>
+                <th className="px-6 py-5 text-center">Actions</th>
               </tr>
-            ) : (
-              residents.map((r, idx) => (
-                <tr key={idx} className="hover:bg-gray-50 transition">
-                  <td className="px-6 py-4">
-                    {r.photo ? (
-                      <img
-                        src={r.photo}
-                        alt={r.firstName}
-                        className="w-16 h-16 rounded-full object-cover border-4 border-green-600 shadow-md"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 rounded-full bg-gray-200 border-4 border-dashed border-gray-400 flex items-center justify-center">
-                        <FaUserCircle className="text-4xl text-gray-400" />
-                      </div>
-                    )}
+            </thead>
+            <tbody>
+              {residents.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="text-center py-16 text-gray-500 text-lg">
+                    No residents added yet.
                   </td>
-                  <td className="px-6 py-4 font-bold text-gray-800">
-                    {r.firstName} {r.lastName}
-                  </td>
-                  <td className="px-6 py-4 text-center">{r.age}</td>
-                  <td className="px-6 py-4 text-center">
-                    <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                </tr>
+              ) : (
+                residents.map((r, idx) => (
+                  <tr key={idx} className="hover:bg-gray-50 transition">
+                    <td className="px-6 py-4">
+                      {r.photo ? (
+                        <img src={r.photo} alt={r.firstName} className="w-12 h-12 rounded-full object-cover border-2 border-green-600" />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+                          <FaUserCircle className="text-2xl text-gray-400" />
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 font-bold text-gray-800">{r.firstName} {r.lastName}</td>
+                    <td className="px-6 py-4 text-center">{r.age}</td>
+                    <td className="px-6 py-4 text-center">
+                      <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase ${
+                        r.gender === "Male" ? "bg-blue-100 text-blue-800" :
+                        r.gender === "Female" ? "bg-pink-100 text-pink-800" : "bg-gray-100 text-gray-800"
+                      }`}>
+                        {r.gender}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-xs">{r.address}</td>
+                    <td className="px-6 py-4 text-xs">{r.contact}</td>
+                    <td className="px-6 py-4 text-center whitespace-nowrap">
+                      <button onClick={() => handleEdit(idx)} className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg mr-2 font-bold transition">Edit</button>
+                      <button onClick={() => handleDelete(idx)} className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-bold transition">Delete</button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden divide-y divide-gray-200">
+          {residents.length === 0 ? (
+            <p className="text-center py-10 text-gray-500">No residents added yet.</p>
+          ) : (
+            residents.map((r, idx) => (
+              <div key={idx} className="p-4 flex gap-4 items-center bg-white hover:bg-gray-50 transition">
+                <div className="flex-shrink-0">
+                  {r.photo ? (
+                    <img src={r.photo} alt={r.firstName} className="w-20 h-20 rounded-2xl object-cover border-2 border-green-600 shadow-lg" />
+                  ) : (
+                    <div className="w-20 h-20 rounded-2xl bg-gray-100 flex items-center justify-center border-2 border-dashed border-gray-300">
+                      <FaUserCircle className="text-5xl text-gray-400" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-gray-900 truncate text-lg">{r.firstName} {r.lastName}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-sm font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded">{r.age} yrs</span>
+                    <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded ${
                       r.gender === "Male" ? "bg-blue-100 text-blue-800" :
-                      r.gender === "Female" ? "bg-pink-100 text-pink-800" :
-                      "bg-gray-100 text-gray-800"
+                      r.gender === "Female" ? "bg-pink-100 text-pink-800" : "bg-gray-100 text-gray-800"
                     }`}>
                       {r.gender}
                     </span>
-                  </td>
-                  <td className="px-6 py-4">{r.address}</td>
-                  <td className="px-6 py-4">{r.contact}</td>
-                  <td className="px-6 py-4 text-center">
-                    <button
-                      onClick={() => handleEdit(idx)}
-                      className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg mr-2 font-medium transition"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(idx)}
-                      className="bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg font-medium transition"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2 truncate">{r.address}</p>
+                  
+                  <div className="flex gap-2 mt-3">
+                    <button onClick={() => handleEdit(idx)} className="flex-1 bg-yellow-500 text-white py-2 rounded-lg text-xs font-bold shadow-sm">Edit</button>
+                    <button onClick={() => handleDelete(idx)} className="flex-1 bg-red-600 text-white py-2 rounded-lg text-xs font-bold shadow-sm">Delete</button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

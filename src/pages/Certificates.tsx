@@ -226,100 +226,120 @@ const handlePrint = (cert: any) => {
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-8 md:space-y-12">
-      <h1 className="text-3xl md:text-5xl font-bold text-center text-green-800">CERTIFICATE ISSUANCE</h1>
+      <h1 className="text-2xl md:text-5xl font-bold text-center text-green-800 uppercase tracking-tight">CERTIFICATE ISSUANCE</h1>
 
       {/* Issue Section */}
-      <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-10">
-        <h2 className="text-2xl md:text-3xl font-bold text-green-700 mb-8">Issue New Certificate</h2>
+      <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-10 border border-green-50">
+        <h2 className="text-xl md:text-3xl font-bold text-green-700 mb-6 md:mb-8 flex items-center gap-3">
+          <div className="w-2 h-8 bg-green-600 rounded-full"></div>
+          Issue New Certificate
+        </h2>
 
         <div className="relative max-w-2xl mx-auto mb-8">
-          <FaSearch className="absolute left-6 top-5 md:top-6 text-xl md:text-2xl text-gray-500" />
+          <FaSearch className="absolute left-6 top-5 text-lg text-gray-400" />
           <input
             type="text"
-            placeholder="Search resident..."
+            placeholder="Search resident name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-14 md:pl-16 pr-6 md:pr-8 py-4 md:py-6 text-lg md:text-xl border-4 border-gray-300 rounded-2xl focus:border-green-600 outline-none"
+            className="w-full pl-14 pr-6 py-4 md:py-5 text-base md:text-xl border-2 border-gray-200 rounded-2xl focus:border-green-600 outline-none transition shadow-inner"
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-6 mb-10 max-h-[400px] overflow-y-auto p-2 scrollbar-hide">
           {filteredResidents.map((r) => (
             <div
               key={r.contact}
               onClick={() => setSelectedResident(r)}
-              className={`p-6 rounded-2xl border-4 cursor-pointer transition-all ${
+              className={`p-4 md:p-6 rounded-2xl border-4 cursor-pointer transition-all flex flex-col items-center justify-center text-center ${
                 selectedResident?.contact === r.contact
-                  ? "border-green-600 bg-green-50 shadow-2xl"
-                  : "border-gray-200 hover:border-green-400"
+                  ? "border-green-600 bg-green-50 shadow-lg scale-105"
+                  : "border-gray-50 hover:border-green-200 bg-gray-50"
               }`}
             >
               {r.photo ? (
-                <img src={r.photo} className="w-20 h-20 rounded-full object-cover mx-auto border-4 border-green-700" />
+                <img src={r.photo} className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-2 border-green-700 shadow-md" />
               ) : (
-                <FaUserCircle className="w-20 h-20 mx-auto text-gray-400" />
+                <FaUserCircle className="w-16 h-16 md:w-20 md:h-20 text-gray-300" />
               )}
-              <p className="text-center font-bold mt-3">{r.firstName} {r.lastName}</p>
+              <p className="font-bold mt-3 text-xs md:text-base text-gray-800 line-clamp-1">{r.firstName} {r.lastName}</p>
             </div>
           ))}
         </div>
 
         {selectedResident && (
-          <div className="grid lg:grid-cols-2 gap-10">
-            <div className="space-y-8">
-              <select value={certType} onChange={(e) => setCertType(e.target.value)} className="w-full px-8 py-5 text-xl rounded-2xl border-4">
-                {CERT_TYPES.map(c => (
-                  <option key={c.value} value={c.value}>{c.label} — ₱{c.fee}</option>
-                ))}
-              </select>
-              <input
-                type="text"
-                value={purpose}
-                onChange={(e) => setPurpose(e.target.value)}
-                placeholder="Purpose (optional)"
-                className="w-full px-8 py-5 text-xl rounded-2xl border-4"
-              />
-              <div className="bg-yellow-100 p-8 rounded-3xl text-center">
-                <p className="text-4xl font-black text-green-600">₱{fee}.00</p>
+          <div className="bg-green-50/50 p-6 md:p-10 rounded-3xl border-2 border-dashed border-green-200 animate-in fade-in duration-500">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+              <div className="space-y-6">
+                <div>
+                  <label className="text-xs font-black text-green-800 uppercase ml-1">Select Document Type</label>
+                  <select value={certType} onChange={(e) => setCertType(e.target.value)} className="w-full px-6 py-4 md:py-5 text-base md:text-xl rounded-2xl border-2 border-green-100 bg-white shadow-sm">
+                    {CERT_TYPES.map(c => (
+                      <option key={c.value} value={c.value}>{c.label} — ₱{c.fee}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-black text-green-800 uppercase ml-1">Purpose of Document</label>
+                  <input
+                    type="text"
+                    value={purpose}
+                    onChange={(e) => setPurpose(e.target.value)}
+                    placeholder="Ex. Employment, ID Application"
+                    className="w-full px-6 py-4 md:py-5 text-base md:text-xl rounded-2xl border-2 border-green-100 shadow-sm"
+                  />
+                </div>
               </div>
-              <button
-                onClick={handleIssue}
-                className="w-full bg-green-600 hover:bg-green-700 text-white py-5 md:py-8 rounded-3xl font-bold text-xl md:text-3xl flex items-center justify-center gap-4 md:gap-6 shadow-xl"
-              >
-                <FaPrint className="text-3xl md:text-5xl" />
-                ISSUE & PRINT
-              </button>
+              
+              <div className="flex flex-col justify-center items-center space-y-6">
+                <div className="text-center">
+                  <p className="text-gray-500 font-bold uppercase tracking-widest text-xs mb-2">Total Amount Due</p>
+                  <p className="text-5xl md:text-7xl font-black text-green-600 drop-shadow-sm">₱{fee}.00</p>
+                </div>
+                <button
+                  onClick={handleIssue}
+                  className="w-full bg-green-700 hover:bg-green-800 text-white py-5 md:py-6 rounded-3xl font-black text-lg md:text-2xl flex items-center justify-center gap-4 shadow-2xl transition transform active:scale-95"
+                >
+                  <FaPrint className="text-2xl md:text-4xl" />
+                  ISSUE & PRINT
+                </button>
+              </div>
             </div>
           </div>
         )}
       </div>
 
       {/* History */}
-      <div className="bg-white rounded-3xl shadow-2xl p-10">
-        <h2 className="text-4xl font-bold text-green-800 mb-8 text-center">Certificate History</h2>
-        {certificates.slice().reverse().map((cert, idx) => {
-          const originalIndex = certificates.length - 1 - idx;
-          return (
-            <div key={cert.controlNo} className="mb-6 p-4 md:p-6 bg-green-50 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">
-              <div className="flex items-center gap-4 md:gap-6 w-full">
-                {cert.residentPhoto ? <img src={cert.residentPhoto} className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover" /> : <FaUserCircle className="w-12 h-12 md:w-16 md:h-16 text-gray-400" />}
-                <div className="flex-1">
-                  <p className="font-bold text-lg md:text-xl text-green-900">{cert.residentName}</p>
-                  <p className="text-sm md:text-base text-gray-700">{cert.type}</p>
-                  <p className="text-xs text-gray-500 italic truncate max-w-[200px] md:max-w-md">{cert.purpose}</p>
+      <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-10 border border-gray-100">
+        <h2 className="text-2xl md:text-4xl font-bold text-green-800 mb-8 text-center uppercase tracking-tighter">Issuance History</h2>
+        <div className="space-y-4">
+          {certificates.slice().reverse().map((cert, idx) => {
+            const originalIndex = certificates.length - 1 - idx;
+            return (
+              <div key={cert.controlNo} className="p-4 md:p-6 bg-gray-50 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6 hover:bg-green-50 transition border border-gray-100">
+                <div className="flex items-center gap-4 w-full">
+                  <div className="flex-shrink-0">
+                    {cert.residentPhoto ? <img src={cert.residentPhoto} className="w-12 h-12 md:w-16 md:h-16 rounded-2xl object-cover border-2 border-white shadow-md" /> : <FaUserCircle className="w-12 h-12 md:w-16 md:h-16 text-gray-300" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-black text-sm md:text-xl text-gray-900 truncate">{cert.residentName}</p>
+                    <p className="text-xs md:text-sm font-bold text-green-700">{cert.type}</p>
+                    <p className="text-[10px] md:text-xs text-gray-400 italic truncate italic">"{cert.purpose}"</p>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-lg md:text-2xl font-black text-green-600">₱{cert.fee}</p>
+                  </div>
+                </div>
+                <div className="flex gap-2 w-full md:w-auto pt-3 md:pt-0 border-t md:border-none border-gray-200">
+                  <button onClick={() => handlePrint(cert)} className="flex-1 md:flex-none bg-blue-600 text-white p-3 md:p-4 rounded-xl shadow-lg hover:bg-blue-700 transition" title="Reprint"><FaPrint /></button>
+                  <button onClick={() => openEditModal(cert)} className="flex-1 md:flex-none bg-yellow-500 text-white p-3 md:p-4 rounded-xl shadow-lg hover:bg-yellow-600 transition" title="Edit"><FaEdit /></button>
+                  <button onClick={() => confirmDelete(originalIndex)} className="flex-1 md:flex-none bg-red-600 text-white p-3 md:p-4 rounded-xl shadow-lg hover:bg-red-700 transition" title="Delete"><FaTrash /></button>
                 </div>
               </div>
-              <div className="flex items-center gap-3 md:gap-4 w-full md:w-auto justify-between md:justify-end border-t md:border-none pt-4 md:pt-0">
-                <span className="text-xl md:text-2xl font-bold text-green-600">₱{cert.fee}</span>
-                <div className="flex gap-2">
-                  <button onClick={() => handlePrint(cert)} className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg shadow"><FaPrint /></button>
-                  <button onClick={() => openEditModal(cert)} className="bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-lg shadow"><FaEdit /></button>
-                  <button onClick={() => confirmDelete(originalIndex)} className="bg-red-600 hover:bg-red-700 text-white p-3 rounded-lg shadow"><FaTrash /></button>
-                </div>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+          {certificates.length === 0 && <p className="text-center py-10 text-gray-400 italic">No issuance history found.</p>}
+        </div>
       </div>
 
       {/* Edit Modal */}
