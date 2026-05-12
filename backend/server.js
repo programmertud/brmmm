@@ -97,6 +97,20 @@ app.post('/api/announcements', async (req, res) => {
     res.status(201).json(data);
 });
 
+app.delete('/api/announcements/:id', async (req, res) => {
+    const { id } = req.params;
+    const { error } = await supabase.from('announcements').delete().eq('id', id);
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ message: "Deleted successfully" });
+});
+
+app.delete('/api/complaints/:id', async (req, res) => {
+    const { id } = req.params;
+    const { error } = await supabase.from('complaints').delete().eq('id', id);
+    if (error) return res.status(500).json({ error: error.message });
+    res.json({ message: "Deleted successfully" });
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT} with Supabase`);
 });

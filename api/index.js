@@ -219,4 +219,26 @@ app.patch(['/api/complaints/:id', '/complaints/:id'], async (req, res) => {
     }
 });
 
+app.delete(['/api/complaints/:id', '/complaints/:id'], async (req, res) => {
+    const { id } = req.params;
+    try {
+        const { error } = await supabase.from('complaints').delete().eq('id', id);
+        if (error) throw error;
+        res.json({ message: "Deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.delete(['/api/announcements/:id', '/announcements/:id'], async (req, res) => {
+    const { id } = req.params;
+    try {
+        const { error } = await supabase.from('announcements').delete().eq('id', id);
+        if (error) throw error;
+        res.json({ message: "Deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 export default app;

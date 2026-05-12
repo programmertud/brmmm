@@ -45,6 +45,17 @@ export default function AdminComplaints() {
     }
   };
 
+  const handleDelete = async (id: number) => {
+    if (!window.confirm("Are you sure you want to delete this complaint?")) return;
+    try {
+      await api.delete(`/complaints/${id}`);
+      setItems(items.filter(item => item.id !== id));
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete complaint");
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-2xl shadow p-6 flex items-center justify-between">
@@ -105,6 +116,12 @@ export default function AdminComplaints() {
                         className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg text-xs font-bold transition shadow-sm"
                       >
                         RESOLVE
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(c.id)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded-lg text-xs font-bold transition shadow-sm"
+                      >
+                        DELETE
                       </button>
                     </div>
                   </td>
